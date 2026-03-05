@@ -1,0 +1,21 @@
+<div class="mb-6 flex justify-between items-center">
+  <%= link_to "← Volver a mis contratos", contracts_path, class: "text-sm text-indigo-600 hover:text-indigo-800" %>
+  <div class="flex space-x-3">
+    <%= link_to "Descargar PDF", contract_path(@contract, format: :pdf), class: "inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700", target: "_blank" %>
+    <%= button_to "Eliminar", contract_path(@contract), method: :delete, class: "inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700", data: { turbo_confirm: "¿Estás seguro de que deseas eliminar este contrato?" } %>
+  </div>
+</div>
+
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+  <h1 class="text-2xl font-bold text-gray-900"><%= @contract.title %></h1>
+  <p class="mt-1 text-sm text-gray-500">
+    Plantilla: <%= @contract.contract_template.name %> |
+    Creado: <%= l(@contract.created_at, format: :long) %>
+  </p>
+
+  <hr class="my-6 border-gray-200">
+
+  <div class="prose max-w-none text-gray-700 whitespace-pre-wrap">
+    <%= @contract.content %>
+  </div>
+</div>

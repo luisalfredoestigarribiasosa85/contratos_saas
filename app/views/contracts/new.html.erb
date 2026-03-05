@@ -1,0 +1,32 @@
+<div class="mb-6">
+  <%= link_to "← Volver a plantillas", contract_templates_path, class: "text-sm text-indigo-600 hover:text-indigo-800" %>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">Completar contrato</h1>
+    <p class="mt-1 text-sm text-gray-500">Plantilla: <strong><%= @template.name %></strong></p>
+
+    <%= form_with url: contracts_path, method: :post, class: "mt-6 space-y-4", data: { controller: "preview", preview_body_value: @template.body } do |f| %>
+      <%= f.hidden_field :contract_template_id, value: @template.id %>
+
+      <% @template.placeholders.each do |placeholder| %>
+        <div>
+          <%= label_tag "contract_data[#{placeholder}]", placeholder.humanize, class: "block text-sm font-medium text-gray-700" %>
+          <%= text_field_tag "contract_data[#{placeholder}]", nil, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm px-3 py-2 border", required: true, data: { preview_target: "field", action: "input->preview#update" } %>
+        </div>
+      <% end %>
+
+      <div class="pt-4">
+        <%= f.submit "Generar contrato", class: "inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <h2 class="text-lg font-semibold text-gray-800">Vista previa</h2>
+    <div class="mt-4 bg-white rounded-lg border border-gray-200 p-6 text-sm text-gray-700 whitespace-pre-wrap" data-preview-target="output">
+      <%= @template.body %>
+    </div>
+  </div>
+</div>

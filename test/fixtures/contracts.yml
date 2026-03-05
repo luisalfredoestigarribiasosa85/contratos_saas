@@ -1,0 +1,13 @@
+one:
+  title: "Contrato de Alquiler - 05/03/2026"
+  content: "Contrato entre Juan Pérez y María López por el inmueble en Av. España 123."
+  user: one
+  contract_template: alquiler
+  data: { "nombre_locador": "Juan Pérez", "nombre_locatario": "María López", "direccion_inmueble": "Av. España 123" }
+
+two:
+  title: "Pagaré - 05/03/2026"
+  content: "Yo, Carlos García, me obligo a pagar a Ana Martínez la suma de Gs. 5000000."
+  user: one
+  contract_template: pagare
+  data: { "nombre_deudor": "Carlos García", "nombre_acreedor": "Ana Martínez", "monto": "5000000" }

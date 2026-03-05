@@ -1,0 +1,11 @@
+alquiler:
+  name: "Contrato de Alquiler"
+  description: "Contrato estándar de alquiler"
+  body: "Contrato entre {{nombre_locador}} y {{nombre_locatario}} por el inmueble en {{direccion_inmueble}}."
+  category: "Inmobiliario"
+
+pagare:
+  name: "Pagaré"
+  description: "Documento de pagaré"
+  body: "Yo, {{nombre_deudor}}, me obligo a pagar a {{nombre_acreedor}} la suma de Gs. {{monto}}."
+  category: "Financiero"

@@ -1,0 +1,24 @@
+<div class="mb-8">
+  <h1 class="text-2xl font-bold text-gray-900">Plantillas de Contratos</h1>
+  <p class="mt-1 text-sm text-gray-500">Selecciona una plantilla para generar tu contrato.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <% @templates.each do |template| %>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex justify-between items-start">
+        <div>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+            <%= template.category %>
+          </span>
+          <h3 class="mt-2 text-lg font-semibold text-gray-900"><%= template.name %></h3>
+          <p class="mt-1 text-sm text-gray-500"><%= template.description %></p>
+        </div>
+      </div>
+      <div class="mt-4 flex space-x-3">
+        <%= link_to "Ver detalles", contract_template_path(template), class: "text-sm text-indigo-600 hover:text-indigo-800 font-medium" %>
+        <%= link_to "Usar plantilla", new_contract_path(template_id: template.id), class: "inline-flex items-center px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700" %>
+      </div>
+    </div>
+  <% end %>
+</div>
