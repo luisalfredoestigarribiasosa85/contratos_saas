@@ -5,7 +5,9 @@ Rails.application.routes.draw do
     root "dashboard#show", as: :authenticated_root
   end
 
-  root "devise/sessions#new"
+  devise_scope :user do
+    root "devise/sessions#new"
+  end
 
   get "dashboard", to: "dashboard#show"
 
