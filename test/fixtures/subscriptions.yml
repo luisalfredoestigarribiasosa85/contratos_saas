@@ -1,0 +1,13 @@
+free_subscription:
+  user: one
+  plan: "free"
+  status: "active"
+  starts_at: <%= Time.current.to_formatted_s(:db) %>
+  lifetime: false
+
+pro_subscription:
+  user: two
+  plan: "pro"
+  status: "active"
+  starts_at: <%= Time.current.to_formatted_s(:db) %>
+  lifetime: false

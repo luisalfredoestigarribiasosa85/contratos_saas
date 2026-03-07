@@ -6,6 +6,21 @@
   <%= link_to "Crear nuevo contrato", contract_templates_path, class: "inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700" %>
 </div>
 
+<% if current_user.free? %>
+  <div class="mb-6 bg-indigo-50 rounded-lg border border-indigo-200 p-4 flex items-center justify-between">
+    <div>
+      <p class="text-sm font-medium text-indigo-800">
+        Plan Gratis — <%= current_user.contracts_remaining %> de <%= current_user.monthly_contract_limit %> contratos restantes este mes
+      </p>
+      <div class="mt-1 w-48 bg-indigo-200 rounded-full h-2">
+        <% used_pct = ((current_user.monthly_contract_limit - current_user.contracts_remaining).to_f / current_user.monthly_contract_limit * 100).round %>
+        <div class="bg-indigo-600 h-2 rounded-full" style="width: <%= used_pct %>%"></div>
+      </div>
+    </div>
+    <%= link_to "Mejorar plan", account_plan_path, class: "text-sm font-semibold text-indigo-700 hover:text-indigo-900" %>
+  </div>
+<% end %>
+
 <% if @contracts.any? %>
   <h2 class="text-lg font-semibold text-gray-800 mb-4">Contratos recientes</h2>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

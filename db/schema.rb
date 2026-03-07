@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_07_142649) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_07_153721) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,6 +36,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_07_142649) do
     t.index ["user_id"], name: "index_contracts_on_user_id"
   end
 
+  create_table "subscriptions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.boolean "lifetime", default: false, null: false
+    t.string "plan", default: "free", null: false
+    t.datetime "starts_at", null: false
+    t.string "status", default: "active", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_subscriptions_on_user_id", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
@@ -50,4 +62,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_07_142649) do
 
   add_foreign_key "contracts", "contract_templates"
   add_foreign_key "contracts", "users"
+  add_foreign_key "subscriptions", "users"
 end

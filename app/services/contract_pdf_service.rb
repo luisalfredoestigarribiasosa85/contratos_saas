@@ -5,13 +5,16 @@ class ContractPdfService
   TITLE_FONT_SIZE = 14
   SIGNATURE_LINE_PATTERN = /_{5,}/
 
-  def initialize(contract)
+  def initialize(contract, user: nil)
     @contract = contract
+    @user = user
   end
 
   def call
     Prawn::Document.new(page_size: "A4", margin: [ 40, 50, 40, 50 ]) do |pdf|
       pdf.font "Helvetica"
+
+      render_watermark(pdf) if show_watermark?
 
       pdf.text @contract.title, size: TITLE_FONT_SIZE, style: :bold, align: :center
       pdf.move_down 10
@@ -41,6 +44,21 @@ class ContractPdfService
   end
 
   private
+
+  def show_watermark?
+    @user.nil? || @user.free?
+  end
+
+  def render_watermark(pdf)
+    pdf.canvas do
+      pdf.rotate(45, origin: [ pdf.bounds.width / 2, pdf.bounds.height / 2 ]) do
+        pdf.draw_text "Generado con ContratoFácil",
+          at: [ pdf.bounds.width / 2 - 140, pdf.bounds.height / 2 ],
+          size: 28,
+          color: "E8E8E8"
+      end
+    end
+  end
 
   def detect_signature_block(lines)
     first_sig_index = lines.index { |l| l.match?(SIGNATURE_LINE_PATTERN) }
@@ -90,7 +108,7 @@ class ContractPdfService
     col_width = 180
     x_offset = (content_width - col_width) / 2
 
-    pdf.bounding_box([x_offset, pdf.cursor], width: col_width) do
+    pdf.bounding_box([ x_offset, pdf.cursor ], width: col_width) do
       pdf.stroke_horizontal_rule
       pdf.move_down 4
       group[:labels].each do |label_row|
@@ -108,7 +126,7 @@ class ContractPdfService
     label_height = 4 + (group[:labels].size * 14)
     cursor_start = pdf.cursor
 
-    pdf.bounding_box([left_x, cursor_start], width: col_width, height: label_height) do
+    pdf.bounding_box([ left_x, cursor_start ], width: col_width, height: label_height) do
       pdf.stroke_horizontal_rule
       pdf.move_down 4
       group[:labels].each do |label_row|
@@ -116,7 +134,7 @@ class ContractPdfService
       end
     end
 
-    pdf.bounding_box([right_x, cursor_start], width: col_width, height: label_height) do
+    pdf.bounding_box([ right_x, cursor_start ], width: col_width, height: label_height) do
       pdf.stroke_horizontal_rule
       pdf.move_down 4
       group[:labels].each do |label_row|

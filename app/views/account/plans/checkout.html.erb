@@ -1,0 +1,64 @@
+<div class="mb-6">
+  <%= link_to "← Volver a mi plan", account_plan_path, class: "text-sm text-indigo-600 hover:text-indigo-800" %>
+</div>
+
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-2xl font-bold text-gray-900">Activar plan <%= @plan.capitalize %></h1>
+
+  <% if @lifetime %>
+    <p class="mt-2 text-lg text-gray-600">Acceso de por vida — <strong>Gs. 250.000</strong> (pago único)</p>
+  <% elsif @plan == "pro" %>
+    <p class="mt-2 text-lg text-gray-600">Plan Pro — <strong>Gs. 39.000</strong> por mes</p>
+  <% elsif @plan == "business" %>
+    <p class="mt-2 text-lg text-gray-600">Plan Business — <strong>Gs. 120.000</strong> por mes</p>
+  <% end %>
+
+  <div class="mt-8 space-y-6">
+    <p class="text-gray-700">Para activar tu plan, realizá el pago por cualquiera de estos medios y enviá el comprobante:</p>
+
+    <%# Option 1: Bank Transfer %>
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900">Opción 1 — Transferencia bancaria</h3>
+      <div class="mt-3 bg-gray-50 rounded-md p-4 text-sm text-gray-700 space-y-1">
+        <p><strong>Banco:</strong> [Nombre del banco]</p>
+        <p><strong>Titular:</strong> [Nombre del titular]</p>
+        <p><strong>Cuenta:</strong> [Número de cuenta]</p>
+        <p><strong>RUC:</strong> [RUC]</p>
+      </div>
+    </div>
+
+    <%# Option 2: QR Payment %>
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900">Opción 2 — Pago con QR</h3>
+      <p class="mt-2 text-sm text-gray-600">Escaneá el código QR con tu app de billetera electrónica (Personal Pay, Tigo Money, etc.)</p>
+      <div class="mt-4 bg-gray-100 rounded-lg w-48 h-48 mx-auto flex items-center justify-center text-gray-400 text-sm">
+        [Código QR aquí]
+      </div>
+    </div>
+
+    <%# Option 3: WhatsApp %>
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+      <h3 class="text-lg font-semibold text-gray-900">Opción 3 — WhatsApp</h3>
+      <p class="mt-2 text-sm text-gray-600">
+        Para activar tu plan, realizá el pago y enviá el comprobante por WhatsApp.
+      </p>
+      <%
+        whatsapp_number = "595981000000"
+        plan_text = @lifetime ? "acceso de por vida (Gs. 250.000)" : "plan #{@plan} (Gs. #{@plan == 'pro' ? '39.000/mes' : '120.000/mes'})"
+        whatsapp_message = "Hola! Quiero activar mi #{plan_text} en ContratoFácil. Mi email es: #{current_user.email}"
+        whatsapp_url = "https://wa.me/#{whatsapp_number}?text=#{ERB::Util.url_encode(whatsapp_message)}"
+      %>
+      <div class="mt-4">
+        <%= link_to whatsapp_url, target: "_blank", rel: "noopener", class: "inline-flex items-center px-6 py-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition" do %>
+          Enviar comprobante por WhatsApp
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-8 bg-blue-50 rounded-lg border border-blue-200 p-4">
+    <p class="text-sm text-blue-800">
+      Una vez confirmado tu pago, activaremos tu plan en menos de 24 horas. Recibirás una confirmación por email.
+    </p>
+  </div>
+</div>
