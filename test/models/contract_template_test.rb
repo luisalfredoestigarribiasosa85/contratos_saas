@@ -18,18 +18,18 @@ class ContractTemplateTest < ActiveSupport::TestCase
   test "validates presence of name" do
     template = ContractTemplate.new(body: "test", category: "test")
     assert_not template.valid?
-    assert_includes template.errors[:name], "can't be blank"
+    assert_includes template.errors[:name], "no puede estar en blanco"
   end
 
   test "validates presence of body" do
     template = ContractTemplate.new(name: "test", category: "test")
     assert_not template.valid?
-    assert_includes template.errors[:body], "can't be blank"
+    assert_includes template.errors[:body], "no puede estar en blanco"
   end
 
   test "validates presence of category" do
     template = ContractTemplate.new(name: "test", body: "test")
     assert_not template.valid?
-    assert_includes template.errors[:category], "can't be blank"
+    assert_includes template.errors[:category], "no puede estar en blanco"
   end
 end

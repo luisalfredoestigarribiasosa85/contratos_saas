@@ -14,12 +14,12 @@ class ContractTest < ActiveSupport::TestCase
   test "validates presence of title" do
     contract = Contract.new(content: "test", user: users(:one), contract_template: contract_templates(:alquiler))
     assert_not contract.valid?
-    assert_includes contract.errors[:title], "can't be blank"
+    assert_includes contract.errors[:title], "no puede estar en blanco"
   end
 
   test "validates presence of content" do
     contract = Contract.new(title: "test", user: users(:one), contract_template: contract_templates(:alquiler))
     assert_not contract.valid?
-    assert_includes contract.errors[:content], "can't be blank"
+    assert_includes contract.errors[:content], "no puede estar en blanco"
   end
 end
