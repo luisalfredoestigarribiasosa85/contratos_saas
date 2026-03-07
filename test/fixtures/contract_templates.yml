@@ -3,9 +3,39 @@ alquiler:
   description: "Contrato estándar de alquiler"
   body: "Contrato entre {{nombre_locador}} y {{nombre_locatario}} por el inmueble en {{direccion_inmueble}}."
   category: "Inmobiliario"
+  field_config:
+    nombre_locador:
+      label: "Nombre del locador"
+    nombre_locatario:
+      label: "Nombre del locatario"
+      hint: "Nombre completo del inquilino"
+    direccion_inmueble:
+      label: "Dirección del inmueble"
 
 pagare:
   name: "Pagaré"
   description: "Documento de pagaré"
   body: "Yo, {{nombre_deudor}}, me obligo a pagar a {{nombre_acreedor}} la suma de Gs. {{monto}}."
   category: "Financiero"
+  field_config:
+    nombre_deudor:
+      label: "Nombre del deudor"
+    nombre_acreedor:
+      label: "Nombre del acreedor"
+    monto:
+      label: "Monto"
+      hint: "Solo números, sin puntos ni comas"
+
+servicios:
+  name: "Contrato de Prestación de Servicios"
+  description: "Contrato de prestación de servicios"
+  body: "Contrato entre {{nombre_contratante}} y {{nombre_prestador}} por {{descripcion_servicio}}."
+  category: "Servicios"
+  field_config:
+    nombre_contratante:
+      label: "Nombre del contratante"
+    nombre_prestador:
+      label: "Nombre del prestador de servicios"
+    descripcion_servicio:
+      label: "Descripción del servicio"
+      hint: "Describa detalladamente el servicio a realizar"

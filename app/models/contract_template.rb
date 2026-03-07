@@ -8,4 +8,12 @@ class ContractTemplate < ApplicationRecord
   def placeholders
     body.scan(/\{\{(\w+)\}\}/).flatten.uniq
   end
+
+  def label_for(placeholder)
+    field_config.dig(placeholder, "label") || placeholder.humanize
+  end
+
+  def hint_for(placeholder)
+    field_config.dig(placeholder, "hint")
+  end
 end

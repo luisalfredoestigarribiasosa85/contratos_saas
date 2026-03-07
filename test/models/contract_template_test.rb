@@ -32,4 +32,33 @@ class ContractTemplateTest < ActiveSupport::TestCase
     assert_not template.valid?
     assert_includes template.errors[:category], "no puede estar en blanco"
   end
+
+  test "label_for returns label from field_config" do
+    template = contract_templates(:alquiler)
+    assert_equal "Nombre del locador", template.label_for("nombre_locador")
+  end
+
+  test "label_for falls back to humanize when no config" do
+    template = ContractTemplate.new(
+      name: "Test", body: "{{campo_nuevo}}", category: "Test", field_config: {}
+    )
+    assert_equal "Campo nuevo", template.label_for("campo_nuevo")
+  end
+
+  test "hint_for returns hint from field_config" do
+    template = contract_templates(:alquiler)
+    assert_equal "Nombre completo del inquilino", template.hint_for("nombre_locatario")
+  end
+
+  test "hint_for returns nil when no hint configured" do
+    template = contract_templates(:alquiler)
+    assert_nil template.hint_for("nombre_locador")
+  end
+
+  test "hint_for returns nil when placeholder not in field_config" do
+    template = ContractTemplate.new(
+      name: "Test", body: "{{foo}}", category: "Test", field_config: {}
+    )
+    assert_nil template.hint_for("foo")
+  end
 end
