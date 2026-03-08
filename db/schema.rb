@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_07_153721) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_08_211727) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -34,6 +34,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_07_153721) do
     t.bigint "user_id", null: false
     t.index ["contract_template_id"], name: "index_contracts_on_contract_template_id"
     t.index ["user_id"], name: "index_contracts_on_user_id"
+  end
+
+  create_table "payment_simulators", force: :cascade do |t|
+    t.integer "amount", null: false
+    t.datetime "created_at", null: false
+    t.string "plan", null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_payment_simulators_on_user_id"
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -62,5 +72,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_07_153721) do
 
   add_foreign_key "contracts", "contract_templates"
   add_foreign_key "contracts", "users"
+  add_foreign_key "payment_simulators", "users"
   add_foreign_key "subscriptions", "users"
 end

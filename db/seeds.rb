@@ -416,4 +416,11 @@ ContractTemplate.find_or_create_by!(name: "Contrato de Prestación de Servicios"
   }
 end
 
+# Test user for local development
+test_user = User.find_or_create_by!(email: "test@contratofacil.com") do |u|
+  u.password = "password123"
+  u.password_confirmation = "password123"
+end
+puts "Usuario de prueba: #{test_user.email} / password123 (Plan: #{test_user.plan_name})"
+
 puts "Seed completado: #{ContractTemplate.count} plantillas disponibles."

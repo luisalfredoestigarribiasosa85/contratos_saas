@@ -15,6 +15,14 @@ Rails.application.routes.draw do
   resources :contract_templates, only: [ :index, :show ], path: "templates"
   resources :contracts, only: [ :index, :show, :new, :create, :destroy ]
 
+  # Payment simulator (local development only — replace with Bancard routes later)
+  resources :payment_simulators, only: [ :new, :create, :show ] do
+    collection do
+      get :success
+      get :fail
+    end
+  end
+
   # Account management
   namespace :account do
     resource :plan, only: [ :show ] do

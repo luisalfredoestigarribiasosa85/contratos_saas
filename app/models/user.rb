@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :contracts, dependent: :destroy
+  has_many :payment_simulators, dependent: :destroy
   has_one :subscription, dependent: :destroy
 
   after_create :create_free_subscription
