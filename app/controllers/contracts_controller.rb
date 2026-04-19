@@ -19,20 +19,35 @@ class ContractsController < ApplicationController
   end
 
   def new
-    @template = ContractTemplate.find(params[:template_id])
+    if params[:custom_template_id]
+      @custom_template = current_user.current_company.custom_templates.find(params[:custom_template_id])
+      @template = @custom_template.contract_template
+    else
+      @template = ContractTemplate.find(params[:template_id])
+    end
     enforce_contract_limit and return
   end
 
   def create
-    @template = ContractTemplate.find(params[:contract_template_id])
+    if params[:custom_template_id]
+      @custom_template = current_user.current_company.custom_templates.find(params[:custom_template_id])
+      @template = @custom_template.contract_template
+      template_content = @custom_template.body
+      template_placeholders = @custom_template.placeholders
+    else
+      @template = ContractTemplate.find(params[:contract_template_id])
+      template_content = @template.body
+      template_placeholders = @template.placeholders
+    end
+    
     enforce_contract_limit and return
-    allowed_keys = @template.placeholders
+    allowed_keys = template_placeholders
     data = params.require(:contract_data).permit(*allowed_keys).to_h
 
-    content = ContractGeneratorService.new(template: @template, data: data).call
+    content = ContractGeneratorService.new(template: @template, data: data, content: template_content).call
 
     @contract = current_user.contracts.build(
-      title: "#{@template.name} - #{Date.today.strftime('%d/%m/%Y')}",
+      title: "#{@custom_template&.name || @template.name} - #{Date.today.strftime('%d/%m/%Y')}",
       content: content,
       contract_template: @template,
       data: data

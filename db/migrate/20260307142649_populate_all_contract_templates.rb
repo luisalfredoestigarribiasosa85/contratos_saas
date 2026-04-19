@@ -12,6 +12,32 @@ class PopulateAllContractTemplates < ActiveRecord::Migration[8.1]
         name: "Contrato de Alquiler",
         category: "Inmobiliario",
         description: "Contrato estándar de alquiler de inmueble para uso en Paraguay.",
+        body: <<~BODY,
+          CONTRATO DE ALQUILER
+
+          En la ciudad de {{ciudad}}, República del Paraguay, a los {{dia}} días del mes de {{mes}} del año {{anio}}, se celebra el presente contrato de alquiler entre:
+
+          EL LOCADOR: {{nombre_locador}}, con cédula de identidad N° {{ci_locador}}, domiciliado en {{domicilio_locador}}.
+          EL LOCATARIO: {{nombre_locatario}}, con cédula de identidad N° {{ci_locatario}}, domiciliado en {{domicilio_locatario}}.
+
+          CLÁUSULA PRIMERA - OBJETO: EL LOCADOR da en alquiler a EL LOCATARIO el inmueble ubicado en {{direccion_inmueble}}, para ser destinado a {{destino_inmueble}}.
+
+          CLÁUSULA SEGUNDA - PLAZO: El presente contrato se celebra por un plazo de {{plazo_meses}} meses, comenzando el {{fecha_inicio}} y finalizando el {{fecha_fin}}.
+
+          CLÁUSULA TERCERA - PRECIO: EL LOCATARIO abonará en concepto de alquiler la suma de {{monto_alquiler}} guaraníes mensuales, más una garantía de {{monto_garantia}} guaraníes.
+
+          CLÁUSULA CUARTA - SERVICIOS: Los servicios de {{servicios_a_cargo}} estarán a cargo de EL LOCATARIO.
+
+          CLÁUSULA QUINTA - PAGO: El pago del alquiler se realizará el día {{dia_pago}} de cada mes.
+
+          CLÁUSULA SEXTA - PREAVISO: Para la rescisión del contrato, cualquiera de las partes deberá dar un preaviso de {{dias_preaviso}} días.
+
+          En prueba de conformidad, las partes firman el presente contrato.
+
+
+          _________________________          _________________________
+          EL LOCADOR                        EL LOCATARIO
+        BODY
         field_config: {
           "ciudad" => { "label" => "Ciudad" },
           "dia" => { "label" => "Día", "hint" => "Ingrese solo el número del día (ej: 15)" },
@@ -39,6 +65,20 @@ class PopulateAllContractTemplates < ActiveRecord::Migration[8.1]
         name: "Pagaré",
         category: "Financiero",
         description: "Documento de pagaré conforme a la legislación paraguaya.",
+        body: <<~BODY,
+          PAGARÉ
+
+          En la ciudad de {{ciudad}}, República del Paraguay, a los {{dia}} días del mes de {{mes}} del año {{anio}}, yo {{nombre_deudor}}, con cédula de identidad N° {{ci_deudor}}, domiciliado en {{domicilio_deudor}}, reconozco deber pura y simplemente a la orden de {{nombre_acreedor}}, con cédula de identidad N° {{ci_acreedor}}, la suma de {{monto}} guaraníes.
+
+          Me obligo a pagar esta suma en la ciudad de {{ciudad_pago}} el día {{fecha_vencimiento}}, con una tasa de interés mensual del {{tasa_interes}}% en caso de mora.
+
+          Sin otro particular, firmo el presente pagaré en prueba de conformidad.
+
+
+          _________________________
+          EL DEUDOR
+          {{nombre_deudor}}
+        BODY
         field_config: {
           "monto" => { "label" => "Monto", "hint" => "Solo números, sin puntos ni comas (ej: 5000000)" },
           "ciudad" => { "label" => "Ciudad" },
@@ -59,6 +99,24 @@ class PopulateAllContractTemplates < ActiveRecord::Migration[8.1]
         name: "Recibo de Dinero",
         category: "Financiero",
         description: "Recibo estándar de dinero para uso general en Paraguay.",
+        body: <<~BODY,
+          RECIBO DE DINERO
+
+          N° {{numero_recibo}}
+
+          En la ciudad de {{ciudad}}, República del Paraguay, a los {{dia}} días del mes de {{mes}} del año {{anio}}.
+
+          Yo, {{nombre_receptor}}, con cédula de identidad N° {{ci_receptor}}, domiciliado en {{domicilio_receptor}}, declaro haber recibido de {{nombre_pagador}}, con cédula de identidad N° {{ci_pagador}}, la suma de {{monto}} guaraníes en concepto de {{concepto}}.
+
+          Forma de pago: {{forma_pago}}.
+
+          Para constancia, firmo el presente recibo.
+
+
+          _________________________
+          EL RECEPTOR
+          {{nombre_receptor}}
+        BODY
         field_config: {
           "numero_recibo" => { "label" => "Número de recibo" },
           "monto" => { "label" => "Monto", "hint" => "Solo números, sin puntos ni comas (ej: 5000000)" },
@@ -79,6 +137,30 @@ class PopulateAllContractTemplates < ActiveRecord::Migration[8.1]
         name: "Contrato de Compraventa de Inmueble",
         category: "Inmobiliario",
         description: "Contrato de compraventa de inmueble para uso en Paraguay.",
+        body: <<~BODY,
+          CONTRATO DE COMPRAVENTA DE INMUEBLE
+
+          En la ciudad de {{ciudad}}, República del Paraguay, a los {{dia}} días del mes de {{mes}} del año {{anio}}, se celebra el presente contrato de compraventa entre:
+
+          VENDEDOR: {{nombre_vendedor}}, con cédula de identidad N° {{ci_vendedor}}, domiciliado en {{domicilio_vendedor}}.
+          COMPRADOR: {{nombre_comprador}}, con cédula de identidad N° {{ci_comprador}}, domiciliado en {{domicilio_comprador}}.
+
+          CLÁUSULA PRIMERA - OBJETO: EL VENDEDOR vende y transfiere a EL COMPRADOR, quien acepta y adquiere, el inmueble ubicado en {{direccion_inmueble}}, inscripto en Registros Públicos bajo el N° {{numero_finca}}, del distrito de {{distrito}}.
+
+          CLÁUSULA SEGUNDA - PRECIO: El precio de la compraventa se fija en la suma de {{precio_total}} guaraníes, que será abonado según la siguiente forma de pago: {{forma_pago}}.
+
+          CLÁUSULA TERCERA - ENTREGA: La entrega del inmueble se realizará el día {{fecha_entrega}}. Los gastos de escrituración e inscripción estarán a cargo de {{responsable_gastos}}.
+
+          CLÁUSULA CUARTA - DOMINIO: EL VENDEDOR garantiza ser dueño legítimo del inmueble y que este no tiene gravámenes ni limitaciones de dominio.
+
+          CLÁUSULA QUINTA - JURISDICCIÓN: Para todos los efectos legales, las partes se someten a la jurisdicción de los Tribunales de la ciudad de {{ciudad}}.
+
+          En prueba de conformidad, las partes firman el presente contrato.
+
+
+          _________________________          _________________________
+          EL VENDEDOR                       EL COMPRADOR
+        BODY
         field_config: {
           "ciudad" => { "label" => "Ciudad" },
           "dia" => { "label" => "Día", "hint" => "Ingrese solo el número del día (ej: 15)" },

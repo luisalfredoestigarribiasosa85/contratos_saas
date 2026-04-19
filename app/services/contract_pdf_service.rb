@@ -8,6 +8,7 @@ class ContractPdfService
   def initialize(contract, user: nil)
     @contract = contract
     @user = user
+    @company = user&.current_company
   end
 
   def call
@@ -15,6 +16,7 @@ class ContractPdfService
       pdf.font "Helvetica"
 
       render_watermark(pdf) if show_watermark?
+      render_company_logo(pdf) if show_company_logo?
 
       pdf.text @contract.title, size: TITLE_FONT_SIZE, style: :bold, align: :center
       pdf.move_down 10
@@ -49,13 +51,61 @@ class ContractPdfService
     @user.nil? || @user.free?
   end
 
+  def show_company_logo?
+    @company&.logo&.attached? && @user&.can_use_business_features?
+  end
+
+  def render_company_logo(pdf)
+    return unless @company&.logo&.attached?
+    
+    begin
+      logo_data = StringIO.new(@company.logo.download)
+      pdf.image logo_data, 
+        width: 100, 
+        position: :center,
+        vposition: :top
+      pdf.move_down 10
+    rescue => e
+      # Si hay error al cargar el logo, continuar sin él
+      Rails.logger.error "Error loading company logo: #{e.message}"
+    end
+  end
+
   def render_watermark(pdf)
     pdf.canvas do
-      pdf.rotate(45, origin: [ pdf.bounds.width / 2, pdf.bounds.height / 2 ]) do
-        pdf.draw_text "Generado con ContratoFácil",
-          at: [ pdf.bounds.width / 2 - 140, pdf.bounds.height / 2 ],
-          size: 28,
-          color: "E8E8E8"
+      # Configurar transparencia visible pero sutil
+      pdf.transparent(0.12) do
+        pdf.fill_color "AAAAAA"
+        
+        # Crear un patrón repetido en toda la hoja
+        page_width = pdf.bounds.width
+        page_height = pdf.bounds.height
+        
+        # Espaciado entre marcas de agua
+        x_spacing = 180
+        y_spacing = 120
+        
+        # Calcular cuántas marcas caben en la página
+        x_count = (page_width / x_spacing).to_i + 1
+        y_count = (page_height / y_spacing).to_i + 1
+        
+        # Generar la cuadrícula de marcas de agua
+        x_count.times do |x|
+          y_count.times do |y|
+            x_pos = x * x_spacing - 50
+            y_pos = y * y_spacing - 30
+            
+            # Solo renderizar si está dentro de los bounds de la página
+            next if x_pos < -50 || x_pos > page_width || y_pos < -50 || y_pos > page_height
+            
+            pdf.rotate(45, origin: [ x_pos + 60, y_pos ]) do
+              pdf.draw_text "ContratoFácil",
+                at: [ x_pos, y_pos ],
+                size: 16,
+                style: :italic
+            end
+          end
+        end
       end
     end
   end

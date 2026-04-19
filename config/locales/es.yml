@@ -62,3 +62,8 @@ es:
       taken: "ya ha sido tomado"
       too_short: "es demasiado corto (mínimo %{count} caracteres)"
       too_long: "es demasiado largo (máximo %{count} caracteres)"
+      record_invalid: "La validación falló: %{errors}"
+  activerecord:
+    errors:
+      messages:
+        record_invalid: "La validación falló: %{errors}"

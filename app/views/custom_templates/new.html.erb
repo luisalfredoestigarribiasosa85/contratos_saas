@@ -1,0 +1,137 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">Nueva Plantilla Personalizada</h1>
+      <p class="mt-1 text-sm text-gray-500">Crea una plantilla personalizada para tu empresa</p>
+    </div>
+
+    <%= form_with(model: @custom_template, local: true, class: "space-y-6") do |form| %>
+      <% if @custom_template.errors.any? %>
+        <div class="rounded-md bg-red-50 p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                Hay <%= pluralize(@custom_template.errors.count, "error") %>
+              </h3>
+              <div class="mt-2 text-sm text-red-700">
+                <ul class="list-disc list-inside space-y-1">
+                  <% @custom_template.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Contract Template Selection -->
+      <div>
+        <%= form.label :contract_template_id, "Plantilla Base", class: "block text-sm font-medium text-gray-700" %>
+        <div class="mt-1">
+          <%= form.select :contract_template_id, 
+              options_from_collection_for_select(@contract_templates, :id, :name, @custom_template.contract_template_id),
+              { prompt: "Selecciona una plantilla base" },
+              { class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" } %>
+        </div>
+        <p class="mt-1 text-xs text-gray-500">Selecciona una plantilla base para personalizar</p>
+      </div>
+
+      <!-- Template Name -->
+      <div>
+        <%= form.label :name, "Nombre de la Plantilla", class: "block text-sm font-medium text-gray-700" %>
+        <div class="mt-1">
+          <%= form.text_field :name, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md", placeholder: "Contrato de Alquiler Personalizado" %>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <%= form.label :description, "Descripción", class: "block text-sm font-medium text-gray-700" %>
+        <div class="mt-1">
+          <%= form.text_area :description, rows: 3, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md", placeholder: "Contrato de alquiler adaptado a las necesidades de nuestra empresa..." %>
+        </div>
+      </div>
+
+      <!-- Template Body -->
+      <div>
+        <%= form.label :body, "Contenido de la Plantilla", class: "block text-sm font-medium text-gray-700" %>
+        <div class="mt-1">
+          <%= form.text_area :body, rows: 15, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md font-mono text-sm", placeholder: "Escribe aquí el contenido de tu plantilla..." %>
+        </div>
+        <p class="mt-1 text-xs text-gray-500">
+          Usa {{placeholder}} para los campos que serán reemplazados. Ej: {{nombre_cliente}}
+        </p>
+      </div>
+
+      <!-- Field Configuration -->
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-sm font-medium text-gray-900 mb-3">Configuración de Campos</h3>
+        <p class="text-xs text-gray-500 mb-3">Define las etiquetas y ayudas para los placeholders de tu plantilla</p>
+        
+        <div id="field-config-container" class="space-y-3">
+          <!-- Fields will be dynamically added here based on placeholders in the body -->
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end space-x-3">
+        <%= link_to "Cancelar", custom_templates_path, class: "bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+        <%= form.submit "Crear Plantilla", class: "bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const bodyTextarea = document.getElementById('custom_template_body');
+    const fieldConfigContainer = document.getElementById('field-config-container');
+    
+    function extractPlaceholders(text) {
+      const matches = text.match(/\{\{(\w+)\}\}/g);
+      if (!matches) return [];
+      return matches.map(match => match.slice(2, -2));
+    }
+    
+    function updateFieldConfig() {
+      const body = bodyTextarea.value;
+      const placeholders = extractPlaceholders(body);
+      
+      fieldConfigContainer.innerHTML = '';
+      
+      if (placeholders.length === 0) {
+        fieldConfigContainer.innerHTML = '<p class="text-sm text-gray-500">No se encontraron placeholders en el contenido</p>';
+        return;
+      }
+      
+      placeholders.forEach(placeholder => {
+        const fieldDiv = document.createElement('div');
+        fieldDiv.className = 'grid grid-cols-1 md:grid-cols-3 gap-3 items-center';
+        fieldDiv.innerHTML = `
+          <div class="text-sm font-medium text-gray-700">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+              {{${placeholder}}}
+            </span>
+          </div>
+          <input type="text" name="custom_template[field_config][${placeholder}][label]" 
+                 placeholder="Etiqueta" 
+                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                 value="${placeholder.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}">
+          <input type="text" name="custom_template[field_config][${placeholder}][hint]" 
+                 placeholder="Ayuda (opcional)" 
+                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+        `;
+        fieldConfigContainer.appendChild(fieldDiv);
+      });
+    }
+    
+    bodyTextarea.addEventListener('input', updateFieldConfig);
+    updateFieldConfig(); // Initial call
+  });
+</script>

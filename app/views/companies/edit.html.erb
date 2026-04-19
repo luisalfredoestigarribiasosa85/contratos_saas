@@ -1,0 +1,116 @@
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">Editar Empresa</h1>
+      <p class="mt-1 text-sm text-gray-500">Actualiza la información de tu empresa</p>
+    </div>
+
+    <%= form_with(model: @company, local: true, class: "space-y-6", multipart: true) do |form| %>
+      <% if @company.errors.any? %>
+        <div class="rounded-md bg-red-50 p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                Hay <%= pluralize(@company.errors.count, "error") %>
+              </h3>
+              <div class="mt-2 text-sm text-red-700">
+                <ul class="list-disc list-inside space-y-1">
+                  <% @company.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Company Name -->
+      <div>
+        <%= form.label :name, "Nombre de la Empresa", class: "block text-sm font-medium text-gray-700" %>
+        <div class="mt-1">
+          <%= form.text_field :name, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md", placeholder: "Mi Empresa S.A." %>
+        </div>
+      </div>
+
+      <!-- Logo Upload -->
+      <div>
+        <%= form.label :logo, "Logo de la Empresa", class: "block text-sm font-medium text-gray-700" %>
+        <div class="mt-1 flex items-center space-x-4">
+          <% if @company.logo.attached? %>
+            <div class="relative">
+              <%= image_tag @company.logo, class: "h-20 w-20 rounded-lg object-cover" %>
+              <div class="absolute -bottom-2 -right-2">
+                <label for="logo-upload" class="cursor-pointer">
+                  <div class="h-6 w-6 bg-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-700">
+                    <svg class="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </div>
+                </label>
+                <%= form.file_field :logo, id: "logo-upload", class: "hidden", accept: "image/*" %>
+              </div>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm text-gray-500">Logo actual. Haz clic en el + para reemplazarlo.</p>
+              <p class="text-xs text-gray-400 mt-1">Formatos recomendados: PNG, JPG. Máximo 2MB.</p>
+            </div>
+          <% else %>
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer" onclick="document.getElementById('logo-upload').click()">
+              <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <div class="mt-4">
+                <label for="logo-upload" class="cursor-pointer">
+                  <span class="mt-2 block text-sm font-medium text-gray-900">Subir Logo</span>
+                  <p class="mt-1 text-xs text-gray-500">PNG, JPG hasta 2MB</p>
+                </label>
+                <%= form.file_field :logo, id: "logo-upload", class: "hidden", accept: "image/*" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Logo Preview Info -->
+      <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-blue-800">
+              <strong>Beneficio Business:</strong> Tu logo aparecerá en todos los contratos generados por tu equipo.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end space-x-3">
+        <%= link_to "Cancelar", company_path(@company), class: "bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+        <%= form.submit "Guardar Cambios", class: "bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  document.getElementById('logo-upload').addEventListener('change', function(e) {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Update preview if needed
+        window.location.reload();
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  });
+</script>

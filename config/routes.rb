@@ -30,6 +30,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Business features
+  resources :companies, only: [ :show, :edit, :update ]
+  resources :custom_templates, only: [ :index, :new, :create, :edit, :update, :destroy ]
+  resources :support_tickets, only: [ :index, :new, :create, :show ]
+
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   get "up" => "rails/health#show", as: :rails_health_check
 end

@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  company: one
+  contract_template: one
+  name: MyString
+  description: MyText
+  body: MyText
+  field_config: 
+
+two:
+  company: two
+  contract_template: two
+  name: MyString
+  description: MyText
+  body: MyText
+  field_config: 

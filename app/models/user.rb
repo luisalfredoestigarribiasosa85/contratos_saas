@@ -7,6 +7,10 @@ class User < ApplicationRecord
   has_many :contracts, dependent: :destroy
   has_many :payment_simulators, dependent: :destroy
   has_one :subscription, dependent: :destroy
+  has_one :company, dependent: :destroy
+  has_many :company_users, dependent: :destroy
+  has_many :companies, through: :company_users
+  has_many :support_tickets, dependent: :destroy
 
   after_create :create_free_subscription
 
@@ -41,6 +45,26 @@ class User < ApplicationRecord
 
   def can_create_contract?
     !free? || contracts_this_month.count < monthly_contract_limit
+  end
+
+  def company_owner?
+    company.present?
+  end
+
+  def company_admin?
+    company_users.exists?(role: "admin")
+  end
+
+  def company_member?
+    company_users.exists?
+  end
+
+  def current_company
+    company || companies.first
+  end
+
+  def can_use_business_features?
+    business? && (company_owner? || company_admin?)
   end
 
   private
