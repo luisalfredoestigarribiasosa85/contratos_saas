@@ -41,36 +41,87 @@
       <!-- Logo Upload -->
       <div>
         <%= form.label :logo, "Logo de la Empresa", class: "block text-sm font-medium text-gray-700" %>
-        <div class="mt-1 flex items-center space-x-4">
+        <div class="mt-1">
           <% if @company.logo.attached? %>
-            <div class="relative">
-              <%= image_tag @company.logo, class: "h-20 w-20 rounded-lg object-cover" %>
-              <div class="absolute -bottom-2 -right-2">
-                <label for="logo-upload" class="cursor-pointer">
-                  <div class="h-6 w-6 bg-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-700">
-                    <svg class="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
+            <div class="bg-gray-50 rounded-lg p-6">
+              <div class="flex items-center space-x-6">
+                <!-- Logo Preview Container -->
+                <div class="relative">
+                  <div class="w-24 h-24 bg-white border-2 border-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
+                    <div id="logo-preview-container" class="w-full h-full flex items-center justify-center">
+                      <%= image_tag @company.logo, 
+                          id: "logo-preview", 
+                          class: "max-w-full max-h-full object-contain transition-all duration-200",
+                          style: "object-fit: contain;" %>
+                    </div>
                   </div>
-                </label>
-                <%= form.file_field :logo, id: "logo-upload", class: "hidden", accept: "image/*" %>
+                  <!-- Replace Button -->
+                  <div class="absolute -bottom-2 -right-2">
+                    <label for="logo-upload-replace" class="cursor-pointer">
+                      <div class="h-8 w-8 bg-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-700 shadow-lg">
+                        <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                      </div>
+                    </label>
+                    <%= form.file_field :logo, id: "logo-upload-replace", class: "hidden", accept: "image/*" %>
+                  </div>
+                </div>
+                
+                <!-- Logo Controls -->
+                <div class="flex-1">
+                  <h4 class="text-sm font-medium text-gray-900 mb-3">Ajuste del Logo</h4>
+                  
+                  <!-- Size Controls -->
+                  <div class="space-y-3">
+                    <div>
+                      <label class="text-xs text-gray-600 block mb-1">Tamaño</label>
+                      <input type="range" id="logo-size" min="50" max="100" value="80" 
+                             class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                      <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>Pequeño</span>
+                        <span>Grande</span>
+                      </div>
+                    </div>
+                    
+                    <!-- Fit Options -->
+                    <div>
+                      <label class="text-xs text-gray-600 block mb-1">Ajuste</label>
+                      <div class="flex space-x-2">
+                        <button type="button" class="logo-fit-btn px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200" data-fit="contain">
+                          Contener
+                        </button>
+                        <button type="button" class="logo-fit-btn px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200" data-fit="cover">
+                          Cubrir
+                        </button>
+                        <button type="button" class="logo-fit-btn px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200" data-fit="fill">
+                          Rellenar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <p class="text-xs text-gray-500 mt-3">
+                    <strong>Logo actual</strong> - Haz clic en el + para reemplazarlo
+                  </p>
+                  <p class="text-xs text-gray-400 mt-1">Formatos: PNG, JPG. Máximo 2MB.</p>
+                </div>
               </div>
             </div>
-            <div class="flex-1">
-              <p class="text-sm text-gray-500">Logo actual. Haz clic en el + para reemplazarlo.</p>
-              <p class="text-xs text-gray-400 mt-1">Formatos recomendados: PNG, JPG. Máximo 2MB.</p>
-            </div>
           <% else %>
-            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer" onclick="document.getElementById('logo-upload').click()">
-              <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+            <!-- New Upload Area -->
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors cursor-pointer" 
+                 onclick="document.getElementById('logo-upload-new').click()">
+              <svg class="mx-auto h-16 w-16 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
-              <div class="mt-4">
-                <label for="logo-upload" class="cursor-pointer">
-                  <span class="mt-2 block text-sm font-medium text-gray-900">Subir Logo</span>
-                  <p class="mt-1 text-xs text-gray-500">PNG, JPG hasta 2MB</p>
+              <div class="mt-6">
+                <label for="logo-upload-new" class="cursor-pointer">
+                  <span class="mt-2 block text-lg font-medium text-gray-900">Subir Logo de Empresa</span>
+                  <p class="mt-2 text-sm text-gray-500">Arrastra una imagen o haz clic para seleccionar</p>
+                  <p class="mt-1 text-xs text-gray-400">PNG, JPG hasta 2MB. Recomendado: 400x400px</p>
                 </label>
-                <%= form.file_field :logo, id: "logo-upload", class: "hidden", accept: "image/*" %>
+                <%= form.file_field :logo, id: "logo-upload-new", class: "hidden", accept: "image/*" %>
               </div>
             </div>
           <% end %>
@@ -103,14 +154,146 @@
 </div>
 
 <script>
-  document.getElementById('logo-upload').addEventListener('change', function(e) {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        // Update preview if needed
-        window.location.reload();
-      };
-      reader.readAsDataURL(e.target.files[0]);
+  document.addEventListener('DOMContentLoaded', function() {
+    // Logo size control
+    const sizeSlider = document.getElementById('logo-size');
+    const logoPreview = document.getElementById('logo-preview');
+    
+    if (sizeSlider && logoPreview) {
+      sizeSlider.addEventListener('input', function() {
+        const size = this.value;
+        logoPreview.style.maxWidth = size + '%';
+        logoPreview.style.maxHeight = size + '%';
+      });
+    }
+    
+    // Logo fit options
+    const fitButtons = document.querySelectorAll('.logo-fit-btn');
+    fitButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const fit = this.dataset.fit;
+        logoPreview.style.objectFit = fit;
+        
+        // Update button styles
+        fitButtons.forEach(btn => {
+          btn.classList.remove('bg-indigo-600', 'text-white');
+          btn.classList.add('bg-gray-100', 'text-gray-700');
+        });
+        this.classList.remove('bg-gray-100', 'text-gray-700');
+        this.classList.add('bg-indigo-600', 'text-white');
+      });
+    });
+    
+    // Set initial active button
+    const activeFitBtn = document.querySelector('.logo-fit-btn[data-fit="contain"]');
+    if (activeFitBtn) {
+      activeFitBtn.classList.remove('bg-gray-100', 'text-gray-700');
+      activeFitBtn.classList.add('bg-indigo-600', 'text-white');
+    }
+    
+    // File upload handlers
+    const logoUploadReplace = document.getElementById('logo-upload-replace');
+    const logoUploadNew = document.getElementById('logo-upload-new');
+    
+    function handleFileUpload(input) {
+      if (input && input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        // Validate file size (2MB max)
+        if (file.size > 2 * 1024 * 1024) {
+          alert('El archivo es demasiado grande. Máximo 2MB.');
+          input.value = '';
+          return;
+        }
+        
+        // Validate file type
+        if (!file.type.match('image.*')) {
+          alert('Por favor selecciona un archivo de imagen (PNG, JPG).');
+          input.value = '';
+          return;
+        }
+        
+        // Preview the image
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          if (logoPreview) {
+            logoPreview.src = e.target.result;
+            logoPreview.onload = function() {
+              // Reset size and fit when new image is loaded
+              if (sizeSlider) sizeSlider.value = 80;
+              logoPreview.style.maxWidth = '80%';
+              logoPreview.style.maxHeight = '80%';
+              
+              // Reset fit buttons
+              fitButtons.forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white');
+                btn.classList.add('bg-gray-100', 'text-gray-700');
+              });
+              const containBtn = document.querySelector('.logo-fit-btn[data-fit="contain"]');
+              if (containBtn) {
+                containBtn.classList.remove('bg-gray-100', 'text-gray-700');
+                containBtn.classList.add('bg-indigo-600', 'text-white');
+              }
+              logoPreview.style.objectFit = 'contain';
+            };
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    
+    if (logoUploadReplace) {
+      logoUploadReplace.addEventListener('change', function() {
+        handleFileUpload(this);
+      });
+    }
+    
+    if (logoUploadNew) {
+      logoUploadNew.addEventListener('change', function() {
+        handleFileUpload(this);
+      });
+    }
+    
+    // Drag and drop functionality
+    const dropZone = document.querySelector('.border-dashed');
+    
+    if (dropZone) {
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+      });
+      
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+      });
+      
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+      });
+      
+      function highlight(e) {
+        dropZone.classList.add('border-indigo-400', 'bg-indigo-50');
+      }
+      
+      function unhighlight(e) {
+        dropZone.classList.remove('border-indigo-400', 'bg-indigo-50');
+      }
+      
+      dropZone.addEventListener('drop', handleDrop, false);
+      
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        
+        if (files.length > 0 && logoUploadNew) {
+          logoUploadNew.files = files;
+          handleFileUpload(logoUploadNew);
+        }
+      }
     }
   });
 </script>

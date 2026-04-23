@@ -44,7 +44,7 @@ class ContractsController < ApplicationController
     allowed_keys = template_placeholders
     data = params.require(:contract_data).permit(*allowed_keys).to_h
 
-    content = ContractGeneratorService.new(template: @template, data: data, content: template_content).call
+    content = ContractGeneratorService.new(template: @template, data: data).call
 
     @contract = current_user.contracts.build(
       title: "#{@custom_template&.name || @template.name} - #{Date.today.strftime('%d/%m/%Y')}",
