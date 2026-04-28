@@ -1,4 +1,466 @@
-<div>
-  <h1 class="font-bold text-4xl">CustomTemplates#edit</h1>
-  <p>Find me in app/views/custom_templates/edit.html.erb</p>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Editar Plantilla Personalizada</h1>
+    <p class="mt-1 text-sm text-gray-500">Edita tu plantilla personalizada</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Main Form Column -->
+    <div class="lg:col-span-2">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <%= form_with(model: @custom_template, local: true, class: "space-y-6") do |form| %>
+          <% if @custom_template.errors.any? %>
+            <div class="rounded-md bg-red-50 p-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-red-800">
+                    Hay <%= pluralize(@custom_template.errors.count, "error") %>
+                  </h3>
+                  <div class="mt-2 text-sm text-red-700">
+                    <ul class="list-disc list-inside space-y-1">
+                      <% @custom_template.errors.full_messages.each do |message| %>
+                        <li><%= message %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- Contract Template Selection -->
+          <div>
+            <%= form.label :contract_template_id, "Plantilla Base", class: "block text-sm font-medium text-gray-700" %>
+            <div class="mt-1">
+              <%= form.select :contract_template_id, 
+                  options_from_collection_for_select(@contract_templates, :id, :name, @custom_template.contract_template_id),
+                  { prompt: "Selecciona una plantilla base" },
+                  { class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" } %>
+            </div>
+            <p class="mt-1 text-xs text-gray-500">Selecciona una plantilla base para personalizar</p>
+          </div>
+
+          <!-- Template Name -->
+          <div>
+            <%= form.label :name, "Nombre de la Plantilla", class: "block text-sm font-medium text-gray-700" %>
+            <div class="mt-1">
+              <%= form.text_field :name, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md", placeholder: "Contrato de Alquiler Personalizado" %>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <%= form.label :description, "Descripción", class: "block text-sm font-medium text-gray-700" %>
+            <div class="mt-1">
+              <%= form.text_area :description, rows: 3, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md", placeholder: "Contrato de alquiler adaptado a las necesidades de nuestra empresa..." %>
+            </div>
+          </div>
+
+          <!-- Template Body -->
+          <div>
+            <%= form.label :body, "Contenido de la Plantilla", class: "block text-sm font-medium text-gray-700" %>
+            <div class="mt-1">
+              <%= form.text_area :body, rows: 20, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md font-mono text-sm", placeholder: "Escribe aquí el contenido de tu plantilla..." %>
+            </div>
+            <p class="mt-1 text-xs text-gray-500">
+              Usa {{placeholder}} para los campos que serán reemplazados. Ej: {{nombre_cliente}}
+            </p>
+          </div>
+
+          <!-- Field Configuration -->
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="text-sm font-medium text-gray-900 mb-3">Configuración de Campos</h3>
+            <p class="text-xs text-gray-500 mb-3">Define las etiquetas y ayudas para los placeholders de tu plantilla</p>
+            
+            <div id="field-config-container" class="space-y-3">
+              <!-- Fields will be dynamically added here based on placeholders in the body -->
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+            <%= link_to "Cancelar", custom_templates_path, class: "bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" %>
+            <%= form.submit "Actualizar Plantilla", class: "bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Right Sidebar - Variables Help -->
+    <div class="lg:col-span-1">
+      <div id="variables-help" class="hidden sticky top-6">
+        <div class="bg-blue-50 border border-blue-200 rounded-lg">
+          <div class="p-4 border-b border-blue-200">
+            <div class="flex items-center">
+              <svg class="h-5 w-5 text-blue-400 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+              </svg>
+              <div>
+                <h3 class="text-sm font-medium text-blue-800">Variables Disponibles</h3>
+                <p class="text-xs text-blue-600 mt-0.5">Haz clic para insertar</p>
+              </div>
+            </div>
+          </div>
+          
+          <div id="variables-list" class="max-h-80 overflow-y-auto">
+            <!-- Variables will be populated here dynamically -->
+          </div>
+          
+          <div class="p-3 bg-blue-100 border-t border-blue-200">
+            <p class="text-xs text-blue-700">
+              <strong>Tip:</strong> Las variables se insertan donde tienes el cursor
+            </p>
+          </div>
+        </div>
+
+        <!-- Quick Tips -->
+        <div class="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <h4 class="text-sm font-medium text-gray-900 mb-3">Consejos Rápidos</h4>
+          <ul class="space-y-2 text-xs text-gray-600">
+            <li class="flex items-start">
+              <svg class="h-4 w-4 text-green-500 mr-1 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span>Usa siempre llaves dobles: {{variable}}</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="h-4 w-4 text-green-500 mr-1 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span>Sin espacios ni caracteres especiales</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="h-4 w-4 text-green-500 mr-1 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span>Usa guion bajo: {{nombre_cliente}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Empty State when no template selected -->
+      <div id="no-template-selected" class="sticky top-6">
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <h3 class="mt-2 text-sm font-medium text-gray-900">Selecciona una Plantilla Base</h3>
+          <p class="mt-1 text-xs text-gray-500">Para ver las variables disponibles, primero selecciona una plantilla base.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+  document.addEventListener('turbo:load', function() {
+    const bodyTextarea = document.getElementById('custom_template_body');
+    const fieldConfigContainer = document.getElementById('field-config-container');
+    const templateSelect = document.getElementById('custom_template_contract_template_id');
+    const variablesHelp = document.getElementById('variables-help');
+    const variablesList = document.getElementById('variables-list');
+    
+    // Template data with all real variables from database
+    const templateVariables = {
+      'Contrato de Alquiler': [
+        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se firma el contrato' },
+        { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
+        { name: 'mes', label: 'Mes', hint: 'Ingrese el nombre del mes (ej: Marzo)' },
+        { name: 'anio', label: 'Año', hint: 'Ingrese el año con 4 dígitos (ej: 2026)' },
+        { name: 'nombre_locador', label: 'Nombre del Locador', hint: 'Nombre completo del dueño del inmueble' },
+        { name: 'ci_locador', label: 'Cédula del Locador', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_locador', label: 'Domicilio del Locador', hint: 'Dirección del propietario' },
+        { name: 'nombre_locatario', label: 'Nombre del Locatario', hint: 'Nombre completo de quien alquila' },
+        { name: 'ci_locatario', label: 'Cédula del Locatario', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_locatario', label: 'Domicilio del Locatario', hint: 'Dirección del inquilino' },
+        { name: 'direccion_inmueble', label: 'Dirección del Inmueble', hint: 'Dirección completa del inmueble' },
+        { name: 'destino_inmueble', label: 'Destino del Inmueble', hint: 'Uso del inmueble (ej: vivienda, comercio)' },
+        { name: 'plazo_meses', label: 'Plazo (meses)', hint: 'Duración del contrato en meses' },
+        { name: 'fecha_inicio', label: 'Fecha de Inicio', hint: 'Formato: dd/mm/aaaa (ej: 01/03/2026)' },
+        { name: 'fecha_fin', label: 'Fecha de Fin', hint: 'Formato: dd/mm/aaaa (ej: 01/03/2027)' },
+        { name: 'monto_alquiler', label: 'Monto del Alquiler', hint: 'Monto mensual en guaraníes sin puntos' },
+        { name: 'monto_garantia', label: 'Monto de Garantía', hint: 'Monto de la garantía en guaraníes sin puntos' },
+        { name: 'servicios_a_cargo', label: 'Servicios a Cargo', hint: 'Quién paga los servicios (ej: inquilino, propietario)' },
+        { name: 'dia_pago', label: 'Día de Pago', hint: 'Día del mes en que se paga (ej: 05)' },
+        { name: 'dias_preaviso', label: 'Días de Preaviso', hint: 'Cantidad de días (ej: 30)' }
+      ],
+      'Contrato de Compraventa de Autovehículo': [
+        { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
+        { name: 'mes', label: 'Mes', hint: 'Ingrese el nombre del mes (ej: Marzo)' },
+        { name: 'anio', label: 'Año', hint: 'Ingrese el año con 4 dígitos (ej: 2026)' },
+        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se realiza la compraventa' },
+        { name: 'nombre_vendedor', label: 'Nombre del Vendedor', hint: 'Nombre completo del vendedor' },
+        { name: 'ci_vendedor', label: 'Cédula del Vendedor', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_vendedor', label: 'Domicilio del Vendedor', hint: 'Dirección del vendedor' },
+        { name: 'nombre_comprador', label: 'Nombre del Comprador', hint: 'Nombre completo del comprador' },
+        { name: 'ci_comprador', label: 'Cédula del Comprador', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_comprador', label: 'Domicilio del Comprador', hint: 'Dirección del comprador' },
+        { name: 'marca_vehiculo', label: 'Marca del Vehículo', hint: 'Ej: Toyota, Hyundai, Kia' },
+        { name: 'modelo_vehiculo', label: 'Modelo del Vehículo', hint: 'Ej: Hilux, Tucson, Sportage' },
+        { name: 'anio_vehiculo', label: 'Año del Vehículo', hint: 'Ej: 2020' },
+        { name: 'color_vehiculo', label: 'Color del Vehículo', hint: 'Color del vehículo' },
+        { name: 'chapa_vehiculo', label: 'Número de Chapa', hint: 'Placa del vehículo' },
+        { name: 'motor_vehiculo', label: 'Número de Motor', hint: 'Número del motor' },
+        { name: 'chasis_vehiculo', label: 'Número de Chasis', hint: 'Número del chasis' },
+        { name: 'precio_total', label: 'Precio Total', hint: 'Solo números, sin puntos ni comas (ej: 80000000)' },
+        { name: 'forma_pago', label: 'Forma de Pago', hint: 'Ej: contado, cuotas mensuales' },
+        { name: 'dias_transferencia', label: 'Días para Transferencia', hint: 'Cantidad de días hábiles (ej: 15)' }
+      ],
+      'Contrato de Préstamo entre Personas': [
+        { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
+        { name: 'mes', label: 'Mes', hint: 'Ingrese el nombre del mes (ej: Marzo)' },
+        { name: 'anio', label: 'Año', hint: 'Ingrese el año con 4 dígitos (ej: 2026)' },
+        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se realiza el préstamo' },
+        { name: 'nombre_prestamista', label: 'Nombre del Prestamista', hint: 'Nombre completo de quien presta' },
+        { name: 'ci_prestamista', label: 'Cédula del Prestamista', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_prestamista', label: 'Domicilio del Prestamista', hint: 'Dirección del prestamista' },
+        { name: 'nombre_prestatario', label: 'Nombre del Prestatario', hint: 'Nombre completo de quien recibe' },
+        { name: 'ci_prestatario', label: 'Cédula del Prestatario', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_prestatario', label: 'Domicilio del Prestatario', hint: 'Dirección del prestatario' },
+        { name: 'monto_prestamo', label: 'Monto del Préstamo', hint: 'Solo números, sin puntos ni comas (ej: 10000000)' },
+        { name: 'tasa_interes', label: 'Tasa de Interés Mensual (%)', hint: 'Solo el número (ej: 2.5)' },
+        { name: 'periodicidad_interes', label: 'Periodicidad del Interés', hint: 'Ej: mensualmente, junto con cada cuota' },
+        { name: 'tasa_mora', label: 'Tasa de Interés Moratorio (%)', hint: 'Solo el número (ej: 1)' },
+        { name: 'plazo_meses', label: 'Plazo (meses)', hint: 'Cantidad de meses (ej: 12)' },
+        { name: 'forma_pago', label: 'Forma de Pago', hint: 'Ej: 12 cuotas mensuales de Gs. 900.000' },
+        { name: 'fecha_vencimiento', label: 'Fecha de Vencimiento', hint: 'Formato: dd/mm/aaaa (ej: 01/03/2027)' },
+        { name: 'garantia', label: 'Garantía', hint: 'Ej: un pagaré por el monto total, un vehículo marca X' }
+      ],
+      'Contrato de Trabajo Informal': [
+        { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
+        { name: 'mes', label: 'Mes', hint: 'Ingrese el nombre del mes (ej: Marzo)' },
+        { name: 'anio', label: 'Año', hint: 'Ingrese el año con 4 dígitos (ej: 2026)' },
+        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se realiza el contrato' },
+        { name: 'nombre_empleador', label: 'Nombre del Empleador', hint: 'Nombre completo del empleador' },
+        { name: 'ci_empleador', label: 'Cédula del Empleador', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_empleador', label: 'Domicilio del Empleador', hint: 'Dirección del empleador' },
+        { name: 'nombre_trabajador', label: 'Nombre del Trabajador', hint: 'Nombre completo del trabajador' },
+        { name: 'ci_trabajador', label: 'Cédula del Trabajador', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_trabajador', label: 'Domicilio del Trabajador', hint: 'Dirección del trabajador' },
+        { name: 'cargo', label: 'Cargo o Función', hint: 'Ej: empleada doméstica, jardinero, albañil' },
+        { name: 'lugar_trabajo', label: 'Lugar de Trabajo', hint: 'Dirección donde se trabaja' },
+        { name: 'dias_laborales', label: 'Días Laborales', hint: 'Ej: lunes a viernes, lunes a sábado' },
+        { name: 'horario_inicio', label: 'Horario de Inicio', hint: 'Ej: 07:00' },
+        { name: 'horario_fin', label: 'Horario de Fin', hint: 'Ej: 15:00' },
+        { name: 'horas_diarias', label: 'Horas Diarias', hint: 'Ej: 8' },
+        { name: 'salario', label: 'Salario', hint: 'Solo números, sin puntos ni comas (ej: 2800000)' },
+        { name: 'periodicidad_pago', label: 'Periodicidad de Pago', hint: 'Ej: mensual, quincenal, semanal' },
+        { name: 'plazo_meses', label: 'Plazo (meses)', hint: 'Cantidad de meses (ej: 6)' },
+        { name: 'dias_preaviso', label: 'Días de Preaviso', hint: 'Cantidad de días (ej: 30)' },
+        { name: 'fecha_inicio', label: 'Fecha de Inicio', hint: 'Formato: dd/mm/aaaa (ej: 01/03/2026)' }
+      ],
+      'Contrato de Prestación de Servicios': [
+        { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
+        { name: 'mes', label: 'Mes', hint: 'Ingrese el nombre del mes (ej: Marzo)' },
+        { name: 'anio', label: 'Año', hint: 'Ingrese el año con 4 dígitos (ej: 2026)' },
+        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se realiza el contrato' },
+        { name: 'nombre_contratante', label: 'Nombre del Contratante', hint: 'Nombre completo de quien contrata' },
+        { name: 'ci_contratante', label: 'Cédula del Contratante', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_contratante', label: 'Domicilio del Contratante', hint: 'Dirección del contratante' },
+        { name: 'nombre_prestador', label: 'Nombre del Prestador de Servicios', hint: 'Nombre completo del prestador' },
+        { name: 'ci_prestador', label: 'Cédula del Prestador', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_prestador', label: 'Domicilio del Prestador', hint: 'Dirección del prestador' },
+        { name: 'descripcion_servicio', label: 'Descripción del Servicio', hint: 'Describa detalladamente el servicio a realizar' },
+        { name: 'monto_honorarios', label: 'Monto de Honorarios', hint: 'Solo números, sin puntos ni comas (ej: 5000000)' },
+        { name: 'forma_pago', label: 'Forma de Pago', hint: 'Ej: 50% al inicio, 50% al finalizar' },
+        { name: 'plazo_dias', label: 'Plazo (días)', hint: 'Cantidad de días (ej: 30)' },
+        { name: 'fecha_entrega', label: 'Fecha de Entrega', hint: 'Formato: dd/mm/aaaa (ej: 01/06/2026)' },
+        { name: 'dias_preaviso', label: 'Días de Preaviso', hint: 'Cantidad de días (ej: 15)' }
+      ],
+      'Pagaré': [
+        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se firma el pagaré' },
+        { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
+        { name: 'mes', label: 'Mes', hint: 'Ingrese el nombre del mes (ej: Marzo)' },
+        { name: 'anio', label: 'Año', hint: 'Ingrese el año con 4 dígitos (ej: 2026)' },
+        { name: 'nombre_deudor', label: 'Nombre del Deudor', hint: 'Nombre completo de quien debe pagar' },
+        { name: 'ci_deudor', label: 'Cédula del Deudor', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_deudor', label: 'Domicilio del Deudor', hint: 'Dirección del deudor' },
+        { name: 'nombre_acreedor', label: 'Nombre del Acreedor', hint: 'Nombre completo de quien recibe el pago' },
+        { name: 'ci_acreedor', label: 'Cédula del Acreedor', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'monto', label: 'Monto', hint: 'Monto total adeudado en guaraníes sin puntos' },
+        { name: 'ciudad_pago', label: 'Ciudad de Pago', hint: 'Ciudad donde se realizará el pago' },
+        { name: 'fecha_vencimiento', label: 'Fecha de Vencimiento', hint: 'Formato: dd/mm/aaaa (ej: 01/12/2026)' },
+        { name: 'tasa_interes', label: 'Tasa de Interés (%)', hint: 'Solo el número (ej: 2.5)' }
+      ],
+      'Recibo de Dinero': [
+        { name: 'numero_recibo', label: 'Número de Recibo', hint: 'Número de recibo (ej: 001)' },
+        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se emite el recibo' },
+        { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
+        { name: 'mes', label: 'Mes', hint: 'Ingrese el nombre del mes (ej: Marzo)' },
+        { name: 'anio', label: 'Año', hint: 'Ingrese el año con 4 dígitos (ej: 2026)' },
+        { name: 'nombre_receptor', label: 'Nombre del Receptor', hint: 'Nombre completo de quien recibe el dinero' },
+        { name: 'ci_receptor', label: 'Cédula del Receptor', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_receptor', label: 'Domicilio del Receptor', hint: 'Dirección de quien recibe' },
+        { name: 'nombre_pagador', label: 'Nombre del Pagador', hint: 'Nombre completo de quien entrega el dinero' },
+        { name: 'ci_pagador', label: 'Cédula del Pagador', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'monto', label: 'Monto', hint: 'Monto total en guaraníes sin puntos' },
+        { name: 'concepto', label: 'Concepto', hint: 'Razón del pago (ej: pago de alquiler, venta de producto)' },
+        { name: 'forma_pago', label: 'Forma de Pago', hint: 'Ej: efectivo, transferencia bancaria' }
+      ],
+      'Contrato de Compraventa de Inmueble': [
+        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se realiza la compraventa' },
+        { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
+        { name: 'mes', label: 'Mes', hint: 'Ingrese el nombre del mes (ej: Marzo)' },
+        { name: 'anio', label: 'Año', hint: 'Ingrese el año con 4 dígitos (ej: 2026)' },
+        { name: 'nombre_vendedor', label: 'Nombre del Vendedor', hint: 'Nombre completo del vendedor' },
+        { name: 'ci_vendedor', label: 'Cédula del Vendedor', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_vendedor', label: 'Domicilio del Vendedor', hint: 'Dirección del vendedor' },
+        { name: 'nombre_comprador', label: 'Nombre del Comprador', hint: 'Nombre completo del comprador' },
+        { name: 'ci_comprador', label: 'Cédula del Comprador', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_comprador', label: 'Domicilio del Comprador', hint: 'Dirección del comprador' },
+        { name: 'direccion_inmueble', label: 'Dirección del Inmueble', hint: 'Dirección completa del inmueble' },
+        { name: 'numero_finca', label: 'Número de Finca', hint: 'Número de finca registral' },
+        { name: 'distrito', label: 'Distrito', hint: 'Distrito donde se ubica el inmueble' },
+        { name: 'precio_total', label: 'Precio Total', hint: 'Solo números, sin puntos ni comas (ej: 150000000)' },
+        { name: 'forma_pago', label: 'Forma de Pago', hint: 'Ej: contado, financiamiento bancario' },
+        { name: 'fecha_entrega', label: 'Fecha de Entrega', hint: 'Formato: dd/mm/aaaa (ej: 01/02/2027)' },
+        { name: 'responsable_gastos', label: 'Responsable de Gastos', hint: 'Quién paga los gastos de escrituración (ej: comprador, vendedor, mitad y mitad)' }
+      ]
+    };
+    
+    function extractPlaceholders(text) {
+      const matches = text.match(/\{\{(\w+)\}\}/g);
+      if (!matches) return [];
+      return matches.map(match => match.slice(2, -2));
+    }
+    
+    function updateVariablesHelp() {
+      const noTemplateSelected = document.getElementById('no-template-selected');
+      
+      if (!templateSelect || !templateSelect.value) {
+        variablesHelp.classList.add('hidden');
+        if (noTemplateSelected) noTemplateSelected.classList.remove('hidden');
+        return;
+      }
+      
+      const selectedOption = templateSelect.options[templateSelect.selectedIndex];
+      const templateName = selectedOption ? selectedOption.text : '';
+      const variables = templateVariables[templateName] || [];
+      
+      if (variables.length === 0) {
+        variablesHelp.classList.add('hidden');
+        if (noTemplateSelected) noTemplateSelected.classList.remove('hidden');
+        return;
+      }
+      
+      variablesHelp.style.display = 'block';
+      variablesHelp.classList.remove('hidden');
+      if (noTemplateSelected) noTemplateSelected.classList.add('hidden');
+      variablesList.innerHTML = '';
+      
+      variables.forEach(variable => {
+        const variableDiv = document.createElement('div');
+        variableDiv.className = 'border-b border-blue-100 last:border-b-0 hover:bg-blue-100 transition-colors cursor-pointer';
+        variableDiv.innerHTML = `
+          <div class="p-3">
+            <div class="flex items-start justify-between">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center space-x-2 mb-1">
+                  <code class="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded text-xs font-mono flex-shrink-0">
+                    {{${variable.name}}}
+                  </code>
+                  <span class="text-sm font-medium text-gray-900 truncate">${variable.label}</span>
+                </div>
+                <p class="text-xs text-gray-500 line-clamp-2">${variable.hint}</p>
+              </div>
+              <button type="button" class="insert-variable-btn text-blue-600 hover:text-blue-800 text-xs font-medium bg-white border border-blue-300 px-2 py-1 rounded hover:bg-blue-50 ml-2 flex-shrink-0" data-variable="${variable.name}">
+                Insertar
+              </button>
+            </div>
+          </div>
+        `;
+        variablesList.appendChild(variableDiv);
+      });
+      
+      document.querySelectorAll('.insert-variable-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const variable = this.dataset.variable;
+          const cursorPos = bodyTextarea.selectionStart;
+          const textBefore = bodyTextarea.value.substring(0, cursorPos);
+          const textAfter = bodyTextarea.value.substring(cursorPos);
+          
+          bodyTextarea.value = textBefore + `{{${variable}}}` + textAfter;
+          bodyTextarea.focus();
+          bodyTextarea.setSelectionRange(cursorPos + variable.length + 4, cursorPos + variable.length + 4);
+          
+          updateFieldConfig();
+        });
+      });
+    }
+    
+    function updateFieldConfig() {
+      const body = bodyTextarea.value;
+      const placeholders = extractPlaceholders(body);
+      
+      fieldConfigContainer.innerHTML = '';
+      
+      if (placeholders.length === 0) {
+        fieldConfigContainer.innerHTML = '<p class="text-sm text-gray-500">No se encontraron placeholders en el contenido</p>';
+        return;
+      }
+      
+      placeholders.forEach(placeholder => {
+        const fieldDiv = document.createElement('div');
+        fieldDiv.className = 'grid grid-cols-1 md:grid-cols-3 gap-3 items-center';
+        fieldDiv.innerHTML = `
+          <div class="text-sm font-medium text-gray-700">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+              {{${placeholder}}}
+            </span>
+          </div>
+          <input type="text" name="custom_template[field_config][${placeholder}][label]" 
+                 placeholder="Etiqueta" 
+                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                 value="${placeholder.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}">
+          <input type="text" name="custom_template[field_config][${placeholder}][hint]" 
+                 placeholder="Ayuda (opcional)" 
+                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+        `;
+        fieldConfigContainer.appendChild(fieldDiv);
+      });
+    }
+    
+    // Event listeners
+    if (templateSelect) {
+      templateSelect.addEventListener('change', updateVariablesHelp);
+      templateSelect.addEventListener('input', updateVariablesHelp);
+    }
+    
+    if (bodyTextarea) {
+      bodyTextarea.addEventListener('input', updateFieldConfig);
+    }
+    
+    // Initial calls with multiple delays to ensure DOM is ready after navigation
+    const initializeApp = () => {
+      // Re-get elements in case they weren't available initially
+      const templateSelect = document.getElementById('custom_template_contract_template_id');
+      const variablesHelp = document.getElementById('variables-help');
+      const variablesList = document.getElementById('variables-list');
+      const fieldConfigContainer = document.getElementById('field-config-container');
+      const bodyTextarea = document.getElementById('custom_template_body');
+      const noTemplateSelected = document.getElementById('no-template-selected');
+      
+      if (templateSelect && variablesHelp && variablesList && fieldConfigContainer && bodyTextarea) {
+        updateVariablesHelp();
+        updateFieldConfig();
+      } else {
+        // Try again after a short delay
+        setTimeout(initializeApp, 100);
+      }
+    };
+    
+    // Start initialization
+    setTimeout(initializeApp, 200);
+    
+    // Fallback: try again when DOM is fully loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeApp);
+    }
+  });
+</script>

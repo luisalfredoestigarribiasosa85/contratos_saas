@@ -94,7 +94,7 @@
     <!-- Right Sidebar - Variables Help -->
     <div class="lg:col-span-1">
       <div id="variables-help" class="hidden sticky top-6">
-        <div class="bg-blue-50 border border-blue-200 rounded-lg overflow-hidden">
+        <div class="bg-blue-50 border border-blue-200 rounded-lg">
           <div class="p-4 border-b border-blue-200">
             <div class="flex items-center">
               <svg class="h-5 w-5 text-blue-400 mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -159,7 +159,7 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('turbo:load', function() {
     const bodyTextarea = document.getElementById('custom_template_body');
     const fieldConfigContainer = document.getElementById('field-config-container');
     const templateSelect = document.getElementById('custom_template_contract_template_id');
@@ -169,21 +169,26 @@
     // Template data with all real variables from database
     const templateVariables = {
       'Contrato de Alquiler': [
+        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se firma el contrato' },
         { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
         { name: 'mes', label: 'Mes', hint: 'Ingrese el nombre del mes (ej: Marzo)' },
         { name: 'anio', label: 'Año', hint: 'Ingrese el año con 4 dígitos (ej: 2026)' },
-        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se firma el contrato' },
-        { name: 'nombre_propietario', label: 'Nombre del Propietario', hint: 'Nombre completo del dueño del inmueble' },
-        { name: 'ci_propietario', label: 'Cédula del Propietario', hint: 'Sin puntos (ej: 1234567)' },
-        { name: 'domicilio_propietario', label: 'Domicilio del Propietario', hint: 'Dirección del propietario' },
-        { name: 'nombre_inquilino', label: 'Nombre del Inquilino', hint: 'Nombre completo de quien alquila' },
-        { name: 'ci_inquilino', label: 'Cédula del Inquilino', hint: 'Sin puntos (ej: 1234567)' },
-        { name: 'domicilio_inquilino', label: 'Domicilio del Inquilino', hint: 'Dirección del inquilino' },
+        { name: 'nombre_locador', label: 'Nombre del Locador', hint: 'Nombre completo del dueño del inmueble' },
+        { name: 'ci_locador', label: 'Cédula del Locador', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_locador', label: 'Domicilio del Locador', hint: 'Dirección del propietario' },
+        { name: 'nombre_locatario', label: 'Nombre del Locatario', hint: 'Nombre completo de quien alquila' },
+        { name: 'ci_locatario', label: 'Cédula del Locatario', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_locatario', label: 'Domicilio del Locatario', hint: 'Dirección del inquilino' },
         { name: 'direccion_inmueble', label: 'Dirección del Inmueble', hint: 'Dirección completa del inmueble' },
+        { name: 'destino_inmueble', label: 'Destino del Inmueble', hint: 'Uso del inmueble (ej: vivienda, comercio)' },
+        { name: 'plazo_meses', label: 'Plazo (meses)', hint: 'Duración del contrato en meses' },
+        { name: 'fecha_inicio', label: 'Fecha de Inicio', hint: 'Formato: dd/mm/aaaa (ej: 01/03/2026)' },
+        { name: 'fecha_fin', label: 'Fecha de Fin', hint: 'Formato: dd/mm/aaaa (ej: 01/03/2027)' },
         { name: 'monto_alquiler', label: 'Monto del Alquiler', hint: 'Monto mensual en guaraníes sin puntos' },
+        { name: 'monto_garantia', label: 'Monto de Garantía', hint: 'Monto de la garantía en guaraníes sin puntos' },
+        { name: 'servicios_a_cargo', label: 'Servicios a Cargo', hint: 'Quién paga los servicios (ej: inquilino, propietario)' },
         { name: 'dia_pago', label: 'Día de Pago', hint: 'Día del mes en que se paga (ej: 05)' },
-        { name: 'lugar_pago', label: 'Lugar de Pago', hint: 'Dónde se realiza el pago' },
-        { name: 'duracion_meses', label: 'Duración (meses)', hint: 'Duración del contrato en meses' }
+        { name: 'dias_preaviso', label: 'Días de Preaviso', hint: 'Cantidad de días (ej: 30)' }
       ],
       'Contrato de Compraventa de Autovehículo': [
         { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
@@ -269,41 +274,40 @@
         { name: 'dias_preaviso', label: 'Días de Preaviso', hint: 'Cantidad de días (ej: 15)' }
       ],
       'Pagaré': [
+        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se firma el pagaré' },
         { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
         { name: 'mes', label: 'Mes', hint: 'Ingrese el nombre del mes (ej: Marzo)' },
         { name: 'anio', label: 'Año', hint: 'Ingrese el año con 4 dígitos (ej: 2026)' },
-        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se firma el pagaré' },
         { name: 'nombre_deudor', label: 'Nombre del Deudor', hint: 'Nombre completo de quien debe pagar' },
         { name: 'ci_deudor', label: 'Cédula del Deudor', hint: 'Sin puntos (ej: 1234567)' },
         { name: 'domicilio_deudor', label: 'Domicilio del Deudor', hint: 'Dirección del deudor' },
         { name: 'nombre_acreedor', label: 'Nombre del Acreedor', hint: 'Nombre completo de quien recibe el pago' },
         { name: 'ci_acreedor', label: 'Cédula del Acreedor', hint: 'Sin puntos (ej: 1234567)' },
-        { name: 'domicilio_acreedor', label: 'Domicilio del Acreedor', hint: 'Dirección del acreedor' },
-        { name: 'cantidad_deuda', label: 'Cantidad Deuda', hint: 'Monto total adeudado en guaraníes sin puntos' },
-        { name: 'forma_pago', label: 'Forma de Pago', hint: 'Ej: cuotas mensuales, pago único' },
-        { name: 'fecha_pago', label: 'Fecha de Pago', hint: 'Formato: dd/mm/aaaa (ej: 01/12/2026)' },
-        { name: 'lugar_firma', label: 'Lugar de Firma', hint: 'Ciudad donde se firma el documento' }
+        { name: 'monto', label: 'Monto', hint: 'Monto total adeudado en guaraníes sin puntos' },
+        { name: 'ciudad_pago', label: 'Ciudad de Pago', hint: 'Ciudad donde se realizará el pago' },
+        { name: 'fecha_vencimiento', label: 'Fecha de Vencimiento', hint: 'Formato: dd/mm/aaaa (ej: 01/12/2026)' },
+        { name: 'tasa_interes', label: 'Tasa de Interés (%)', hint: 'Solo el número (ej: 2.5)' }
       ],
       'Recibo de Dinero': [
+        { name: 'numero_recibo', label: 'Número de Recibo', hint: 'Número de recibo (ej: 001)' },
+        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se emite el recibo' },
         { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
         { name: 'mes', label: 'Mes', hint: 'Ingrese el nombre del mes (ej: Marzo)' },
         { name: 'anio', label: 'Año', hint: 'Ingrese el año con 4 dígitos (ej: 2026)' },
-        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se emite el recibo' },
-        { name: 'nombre_recibidor', label: 'Nombre de quien Recibe', hint: 'Nombre completo de quien recibe el dinero' },
-        { name: 'ci_recibidor', label: 'Cédula de quien Recibe', hint: 'Sin puntos (ej: 1234567)' },
-        { name: 'domicilio_recibidor', label: 'Domicilio de quien Recibe', hint: 'Dirección de quien recibe' },
-        { name: 'nombre_pagador', label: 'Nombre de quien Paga', hint: 'Nombre completo de quien entrega el dinero' },
-        { name: 'ci_pagador', label: 'Cédula de quien Paga', hint: 'Sin puntos (ej: 1234567)' },
-        { name: 'domicilio_pagador', label: 'Domicilio de quien Paga', hint: 'Dirección de quien paga' },
-        { name: 'cantidad_recibida', label: 'Cantidad Recibida', hint: 'Monto total recibido en guaraníes sin puntos' },
-        { name: 'concepto_pago', label: 'Concepto de Pago', hint: 'Razón del pago (ej: pago de alquiler, venta de producto)' },
-        { name: 'fecha_recibo', label: 'Fecha del Recibo', hint: 'Formato: dd/mm/aaaa (ej: 01/11/2026)' }
+        { name: 'nombre_receptor', label: 'Nombre del Receptor', hint: 'Nombre completo de quien recibe el dinero' },
+        { name: 'ci_receptor', label: 'Cédula del Receptor', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'domicilio_receptor', label: 'Domicilio del Receptor', hint: 'Dirección de quien recibe' },
+        { name: 'nombre_pagador', label: 'Nombre del Pagador', hint: 'Nombre completo de quien entrega el dinero' },
+        { name: 'ci_pagador', label: 'Cédula del Pagador', hint: 'Sin puntos (ej: 1234567)' },
+        { name: 'monto', label: 'Monto', hint: 'Monto total en guaraníes sin puntos' },
+        { name: 'concepto', label: 'Concepto', hint: 'Razón del pago (ej: pago de alquiler, venta de producto)' },
+        { name: 'forma_pago', label: 'Forma de Pago', hint: 'Ej: efectivo, transferencia bancaria' }
       ],
       'Contrato de Compraventa de Inmueble': [
+        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se realiza la compraventa' },
         { name: 'dia', label: 'Día', hint: 'Ingrese solo el número del día (ej: 15)' },
         { name: 'mes', label: 'Mes', hint: 'Ingrese el nombre del mes (ej: Marzo)' },
         { name: 'anio', label: 'Año', hint: 'Ingrese el año con 4 dígitos (ej: 2026)' },
-        { name: 'ciudad', label: 'Ciudad', hint: 'Ciudad donde se realiza la compraventa' },
         { name: 'nombre_vendedor', label: 'Nombre del Vendedor', hint: 'Nombre completo del vendedor' },
         { name: 'ci_vendedor', label: 'Cédula del Vendedor', hint: 'Sin puntos (ej: 1234567)' },
         { name: 'domicilio_vendedor', label: 'Domicilio del Vendedor', hint: 'Dirección del vendedor' },
@@ -311,11 +315,12 @@
         { name: 'ci_comprador', label: 'Cédula del Comprador', hint: 'Sin puntos (ej: 1234567)' },
         { name: 'domicilio_comprador', label: 'Domicilio del Comprador', hint: 'Dirección del comprador' },
         { name: 'direccion_inmueble', label: 'Dirección del Inmueble', hint: 'Dirección completa del inmueble' },
-        { name: 'descripcion_inmueble', label: 'Descripción del Inmueble', hint: 'Detalles del inmueble (ej: casa de 2 plantas, 3 habitaciones)' },
-        { name: 'matricula_inmueble', label: 'Matrícula del Inmueble', hint: 'Número de matrícula registral' },
-        { name: 'precio_venta', label: 'Precio de Venta', hint: 'Solo números, sin puntos ni comas (ej: 150000000)' },
+        { name: 'numero_finca', label: 'Número de Finca', hint: 'Número de finca registral' },
+        { name: 'distrito', label: 'Distrito', hint: 'Distrito donde se ubica el inmueble' },
+        { name: 'precio_total', label: 'Precio Total', hint: 'Solo números, sin puntos ni comas (ej: 150000000)' },
         { name: 'forma_pago', label: 'Forma de Pago', hint: 'Ej: contado, financiamiento bancario' },
-        { name: 'fecha_entrega', label: 'Fecha de Entrega', hint: 'Formato: dd/mm/aaaa (ej: 01/02/2027)' }
+        { name: 'fecha_entrega', label: 'Fecha de Entrega', hint: 'Formato: dd/mm/aaaa (ej: 01/02/2027)' },
+        { name: 'responsable_gastos', label: 'Responsable de Gastos', hint: 'Quién paga los gastos de escrituración (ej: comprador, vendedor, mitad y mitad)' }
       ]
     };
     
@@ -344,6 +349,7 @@
         return;
       }
       
+      variablesHelp.style.display = 'block';
       variablesHelp.classList.remove('hidden');
       if (noTemplateSelected) noTemplateSelected.classList.add('hidden');
       variablesList.innerHTML = '';
@@ -372,7 +378,6 @@
         variablesList.appendChild(variableDiv);
       });
       
-      // Add click handlers for insert buttons
       document.querySelectorAll('.insert-variable-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const variable = this.dataset.variable;
@@ -423,15 +428,43 @@
     
     // Event listeners
     if (templateSelect) {
+      console.log('Adding event listeners to templateSelect');
       templateSelect.addEventListener('change', updateVariablesHelp);
+      templateSelect.addEventListener('input', updateVariablesHelp); // Additional event for better compatibility
+      console.log('Event listeners added');
+    } else {
+      console.log('templateSelect not found!');
     }
     
     if (bodyTextarea) {
       bodyTextarea.addEventListener('input', updateFieldConfig);
     }
     
-    // Initial calls
-    updateVariablesHelp();
-    updateFieldConfig();
+    // Initial calls with multiple delays to ensure DOM is ready after navigation
+    const initializeApp = () => {
+      // Re-get elements in case they weren't available initially
+      const templateSelect = document.getElementById('custom_template_contract_template_id');
+      const variablesHelp = document.getElementById('variables-help');
+      const variablesList = document.getElementById('variables-list');
+      const fieldConfigContainer = document.getElementById('field-config-container');
+      const bodyTextarea = document.getElementById('custom_template_body');
+      const noTemplateSelected = document.getElementById('no-template-selected');
+      
+      if (templateSelect && variablesHelp && variablesList && fieldConfigContainer && bodyTextarea) {
+        updateVariablesHelp();
+        updateFieldConfig();
+      } else {
+        // Try again after a short delay
+        setTimeout(initializeApp, 100);
+      }
+    };
+    
+    // Start initialization
+    setTimeout(initializeApp, 200);
+    
+    // Fallback: try again when DOM is fully loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeApp);
+    }
   });
 </script>

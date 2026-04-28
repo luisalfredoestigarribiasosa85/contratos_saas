@@ -13,7 +13,10 @@ class CustomTemplatesController < ApplicationController
   def new
     @custom_template = @company.custom_templates.build
     @contract_templates = ContractTemplate.all
-    @custom_template.clone_from_contract_template if params[:contract_template_id]
+    if params[:contract_template_id]
+      @custom_template.contract_template_id = params[:contract_template_id]
+      @custom_template.clone_from_contract_template
+    end
   end
 
   def create
