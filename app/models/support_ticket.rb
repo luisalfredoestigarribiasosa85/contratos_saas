@@ -1,5 +1,6 @@
 class SupportTicket < ApplicationRecord
   belongs_to :user
+  has_many :ticket_replies, dependent: :destroy
   
   validates :subject, presence: true, length: { maximum: 255 }
   validates :description, presence: true
@@ -37,5 +38,13 @@ class SupportTicket < ApplicationRecord
   
   def self.for_business_users
     joins(user: :subscription).where(subscriptions: { plan: "business", status: "active" })
+  end
+  
+  def last_reply
+    ticket_replies.order(created_at: :desc).first
+  end
+  
+  def reply_count
+    ticket_replies.count
   end
 end

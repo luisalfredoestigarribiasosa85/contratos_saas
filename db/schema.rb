@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_19_154430) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_28_233101) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -130,6 +130,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_19_154430) do
     t.index ["user_id"], name: "index_support_tickets_on_user_id"
   end
 
+  create_table "ticket_replies", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "message"
+    t.bigint "support_ticket_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["support_ticket_id"], name: "index_ticket_replies_on_support_ticket_id"
+    t.index ["user_id"], name: "index_ticket_replies_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
@@ -154,4 +164,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_19_154430) do
   add_foreign_key "payment_simulators", "users"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "support_tickets", "users"
+  add_foreign_key "ticket_replies", "support_tickets"
+  add_foreign_key "ticket_replies", "users"
 end

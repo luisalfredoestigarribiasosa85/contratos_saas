@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  namespace :admin do
+    resources :support_tickets, only: [:index, :show, :update] do
+      post :create_reply, on: :member
+    end
+  end
   devise_for :users
 
   # Public pages
@@ -33,7 +38,9 @@ Rails.application.routes.draw do
   # Business features
   resources :companies, only: [ :show, :edit, :update ]
   resources :custom_templates, only: [ :index, :new, :create, :edit, :update, :destroy ]
-  resources :support_tickets, only: [ :index, :new, :create, :show ]
+  resources :support_tickets, only: [ :index, :new, :create, :show ] do
+    post :create_reply, on: :member
+  end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   get "up" => "rails/health#show", as: :rails_health_check

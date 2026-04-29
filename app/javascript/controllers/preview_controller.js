@@ -5,10 +5,14 @@ export default class extends Controller {
   static values = { body: String }
 
   connect() {
-    this.update()
+    if (this.hasOutputTarget) {
+      this.update()
+    }
   }
 
   update() {
+    if (!this.hasOutputTarget || !this.hasFieldTarget) return
+
     let content = this.bodyValue
     this.fieldTargets.forEach((field) => {
       const name = field.name.match(/\[(\w+)\]/)?.[1]

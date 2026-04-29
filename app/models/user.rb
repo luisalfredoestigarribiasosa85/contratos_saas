@@ -67,6 +67,10 @@ class User < ApplicationRecord
     business? && (company_owner? || company_admin?)
   end
 
+  def admin?
+    email == 'admin@contratossaas.com' || email == 'luisalfredoestigarribiasosa85@gmail.com'
+  end
+
   private
 
   def create_free_subscription
