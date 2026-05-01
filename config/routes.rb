@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   namespace :account do
     resource :plan, only: [ :show ] do
       get :checkout
+      post :downgrade
     end
   end
 

@@ -1,13 +1,13 @@
 class PaymentSimulatorsController < ApplicationController
   def new
     @plan = params[:plan]
-    @plan = "pro" unless %w[pro business].include?(@plan)
+    @plan = "pro" unless %w[pro business lifetime].include?(@plan)
     @amount = PaymentSimulatorService::PLAN_PRICES[@plan]
   end
 
   def create
     plan = params[:plan]
-    unless %w[pro business].include?(plan)
+    unless %w[pro business lifetime].include?(plan)
       redirect_to new_payment_simulator_path, alert: "Plan no válido."
       return
     end

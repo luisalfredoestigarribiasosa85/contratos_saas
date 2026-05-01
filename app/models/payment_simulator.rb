@@ -1,7 +1,7 @@
 class PaymentSimulator < ApplicationRecord
   belongs_to :user
 
-  PLANS = %w[pro business].freeze
+  PLANS = %w[pro business lifetime].freeze
   STATUSES = %w[pending success failed].freeze
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
@@ -27,6 +27,7 @@ class PaymentSimulator < ApplicationRecord
     case plan
     when "pro" then "Pro"
     when "business" then "Business"
+    when "lifetime" then "Lifetime (Acceso de por vida)"
     end
   end
 end

@@ -12,7 +12,8 @@
 class PaymentSimulatorService
   PLAN_PRICES = {
     "pro" => 39_000,
-    "business" => 120_000
+    "business" => 120_000,
+    "lifetime" => 250_000
   }.freeze
 
   def initialize(user:, plan:, amount: nil)
@@ -52,11 +53,22 @@ class PaymentSimulatorService
   def upgrade_subscription!
     subscription = @user.subscription || @user.build_subscription
 
-    subscription.update!(
-      plan: @plan,
-      status: "active",
-      starts_at: Time.current,
-      expires_at: 1.month.from_now
-    )
+    if @plan == "lifetime"
+      subscription.update!(
+        plan: "pro",
+        status: "active",
+        starts_at: Time.current,
+        expires_at: nil,
+        lifetime: true
+      )
+    else
+      subscription.update!(
+        plan: @plan,
+        status: "active",
+        starts_at: Time.current,
+        expires_at: 1.month.from_now,
+        lifetime: false
+      )
+    end
   end
 end

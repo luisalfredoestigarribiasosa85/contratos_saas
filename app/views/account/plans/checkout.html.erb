@@ -67,8 +67,8 @@
       <h3 class="text-lg font-semibold text-amber-800">Simulador de pagos (solo desarrollo)</h3>
       <p class="mt-1 text-sm text-amber-700">Probá el flujo de pago sin una pasarela real.</p>
       <div class="mt-4">
-        <%= link_to "Simular pago de #{@plan.capitalize}",
-            new_payment_simulator_path(plan: @plan),
+        <%= link_to "Simular pago de #{@lifetime ? 'Acceso de por vida' : @plan.capitalize}",
+            new_payment_simulator_path(plan: @lifetime ? "lifetime" : @plan),
             class: "inline-flex px-6 py-2 rounded-lg bg-amber-600 text-white font-semibold hover:bg-amber-700" %>
       </div>
     </div>
