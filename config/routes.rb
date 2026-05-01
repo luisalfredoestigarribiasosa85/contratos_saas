@@ -23,8 +23,8 @@ Rails.application.routes.draw do
   # Payment simulator (local development only — replace with Bancard routes later)
   resources :payment_simulators, only: [ :new, :create, :show ] do
     collection do
-      get :success
-      get :fail
+      post :success
+      post :fail
     end
   end
 
