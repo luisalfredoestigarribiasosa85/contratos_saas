@@ -20,10 +20,11 @@
     <div class="bg-white rounded-lg border border-gray-200 p-6">
       <h3 class="text-lg font-semibold text-gray-900">Opción 1 — Transferencia bancaria</h3>
       <div class="mt-3 bg-gray-50 rounded-md p-4 text-sm text-gray-700 space-y-1">
-        <p><strong>Banco:</strong> [Nombre del banco]</p>
-        <p><strong>Titular:</strong> [Nombre del titular]</p>
-        <p><strong>Cuenta:</strong> [Número de cuenta]</p>
-        <p><strong>RUC:</strong> [RUC]</p>
+        <p><strong>Banco:</strong> Banco GNB </p>
+        <p><strong>Titular:</strong> Luis Alfredo Estigarribia Sosa </p>
+        <p><strong>Cuenta:</strong> 13143353002 </p>
+        <p><strong>C.I.:</strong> 5.927.973 </p>
+        <p><strong>Alias:</strong> 0982909893 </p>
       </div>
     </div>
 
@@ -43,7 +44,7 @@
         Para activar tu plan, realizá el pago y enviá el comprobante por WhatsApp.
       </p>
       <%
-        whatsapp_number = "595981000000"
+        whatsapp_number = "595982909893"
         plan_text = @lifetime ? "acceso de por vida (Gs. 250.000)" : "plan #{@plan} (Gs. #{@plan == 'pro' ? '39.000/mes' : '120.000/mes'})"
         whatsapp_message = "Hola! Quiero activar mi #{plan_text} en ContratoFácil. Mi email es: #{current_user.email}"
         whatsapp_url = "https://wa.me/#{whatsapp_number}?text=#{ERB::Util.url_encode(whatsapp_message)}"
