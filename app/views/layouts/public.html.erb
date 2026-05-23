@@ -27,14 +27,14 @@
           <div class="flex items-center">
             <%= link_to "ContratoFácil", root_path, class: "text-xl font-bold text-indigo-600" %>
             <!-- Desktop Navigation Links -->
-            <div class="hidden md:flex ml-8 space-x-6">
+            <div class="hidden md:flex ml-8 space-x-6 desktop-nav">
               <%= link_to "Inicio", root_path, class: "text-gray-600 hover:text-gray-900 text-sm font-medium" %>
               <%= link_to "Precios", pricing_path, class: "text-gray-600 hover:text-gray-900 text-sm font-medium" %>
             </div>
           </div>
 
           <!-- Desktop Auth Buttons -->
-          <div class="hidden md:flex items-center space-x-4">
+          <div class="hidden md:flex items-center space-x-4 desktop-nav">
             <% if user_signed_in? %>
               <%= link_to "Dashboard", authenticated_root_path, class: "text-sm text-indigo-600 hover:text-indigo-800 font-medium" %>
             <% else %>
@@ -43,8 +43,8 @@
             <% end %>
           </div>
 
-          <!-- Mobile Menu Button -->
-          <div class="flex items-center md:hidden">
+          <!-- Mobile Menu Button (only visible on small screens) -->
+          <div class="md:!hidden mobile-menu-btn">
             <button type="button" data-action="click->toggle#toggle" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-expanded="false">
               <span class="sr-only">Abrir menú</span>
               <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -56,7 +56,7 @@
       </div>
 
       <!-- Mobile Menu -->
-      <div class="hidden md:hidden" data-toggle-target="content">
+      <div class="hidden md:hidden mobile-menu-panel" data-toggle-target="content">
         <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
           <%= link_to "Inicio", root_path, class: "block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" %>
           <%= link_to "Precios", pricing_path, class: "block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50" %>

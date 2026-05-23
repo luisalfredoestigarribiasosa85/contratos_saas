@@ -6,6 +6,26 @@
   <%= link_to "Crear nuevo contrato", contract_templates_path, class: "inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 whitespace-nowrap" %>
 </div>
 
+<% if @pending_invitations.any? %>
+  <div class="mb-6 space-y-4">
+    <% @pending_invitations.each do |invitation| %>
+      <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-100 p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-lg font-semibold text-indigo-900">Invitación de Equipo</h3>
+          <p class="text-sm text-indigo-700 mt-1">
+            Has sido invitado a unirte a la empresa <strong><%= invitation.company.name %></strong> como <strong><%= invitation.role == 'admin' ? 'Administrador' : 'Miembro' %></strong>.
+          </p>
+          <p class="text-xs text-indigo-500 mt-1">Podrás colaborar en la creación y gestión de contratos del equipo.</p>
+        </div>
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <%= button_to "Aceptar", accept_company_invitation_path(invitation), method: :post, class: "flex-1 sm:flex-initial text-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 cursor-pointer shadow-sm" %>
+          <%= button_to "Rechazar", decline_company_invitation_path(invitation), method: :post, class: "flex-1 sm:flex-initial text-center px-4 py-2 bg-white text-gray-700 border border-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 cursor-pointer" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
 <% if current_user.free? %>
   <div class="mb-6 bg-indigo-50 rounded-lg border border-indigo-200 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
     <div class="flex-1">

@@ -1,1 +1,64 @@
 @import "tailwindcss";
+
+/* =============================================
+   Responsive Navbar: ensure hamburger is hidden
+   on desktop and nav links are visible
+   ============================================= */
+
+/* Mobile menu button: hide on md+ screens */
+@media (min-width: 768px) {
+  .mobile-menu-btn {
+    display: none !important;
+  }
+
+  .mobile-menu-panel {
+    display: none !important;
+  }
+
+  .desktop-nav {
+    display: flex !important;
+  }
+}
+
+/* Mobile: hide desktop nav, show hamburger */
+@media (max-width: 767px) {
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: block !important;
+  }
+}
+
+/* Desktop: hide mobile menu elements */
+@media (min-width: 768px) {
+  .mobile-menu-btn {
+    display: none !important;
+  }
+
+  .mobile-menu-panel {
+    display: none !important;
+  }
+
+  .desktop-nav {
+    display: flex !important;
+  }
+
+  .desktop-only {
+    display: block !important;
+  }
+
+  .mobile-only {
+    display: none !important;
+  }
+}

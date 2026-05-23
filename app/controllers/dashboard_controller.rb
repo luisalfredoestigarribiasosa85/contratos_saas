@@ -1,6 +1,7 @@
 class DashboardController < ApplicationController
   def show
     @contracts = current_user.contracts.includes(:contract_template).order(created_at: :desc)
+    @pending_invitations = current_user.pending_invitations.includes(:company)
     
     if current_user.business?
       @company = current_user.current_company

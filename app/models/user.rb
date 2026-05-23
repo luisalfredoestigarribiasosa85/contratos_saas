@@ -13,6 +13,11 @@ class User < ApplicationRecord
   has_many :support_tickets, dependent: :destroy
 
   after_create :create_free_subscription
+  after_create :check_pending_invitations
+
+  def pending_invitations
+    CompanyInvitation.pending.where(email: email)
+  end
 
   def free?
     subscription.nil? || subscription.free?
@@ -79,5 +84,11 @@ class User < ApplicationRecord
       status: "active",
       starts_at: Time.current
     )
+  end
+
+  def check_pending_invitations
+    CompanyInvitation.pending.where(email: email).each do |invitation|
+      invitation.accept!(self)
+    end
   end
 end

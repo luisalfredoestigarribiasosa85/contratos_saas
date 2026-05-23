@@ -37,7 +37,15 @@ Rails.application.routes.draw do
   end
 
   # Business features
-  resources :companies, only: [ :show, :edit, :update ]
+  resources :companies, only: [ :show, :edit, :update ] do
+    resources :company_invitations, only: [ :create, :destroy ], path: "invitations", module: :companies
+  end
+  resources :company_invitations, only: [] do
+    member do
+      post :accept
+      post :decline
+    end
+  end
   resources :custom_templates, only: [ :index, :new, :create, :edit, :update, :destroy ]
   resources :support_tickets, only: [ :index, :new, :create, :show ] do
     post :create_reply, on: :member

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_16_184631) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_23_233529) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -49,6 +49,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_16_184631) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_companies_on_user_id"
+  end
+
+  create_table "company_invitations", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.string "role", default: "member", null: false
+    t.string "status", default: "pending", null: false
+    t.string "token", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "email"], name: "index_company_invitations_on_company_id_and_email", unique: true, where: "((status)::text = 'pending'::text)"
+    t.index ["company_id"], name: "index_company_invitations_on_company_id"
+    t.index ["token"], name: "index_company_invitations_on_token", unique: true
   end
 
   create_table "company_users", force: :cascade do |t|
@@ -155,6 +168,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_16_184631) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "companies", "users"
+  add_foreign_key "company_invitations", "companies"
   add_foreign_key "company_users", "companies"
   add_foreign_key "company_users", "users"
   add_foreign_key "contracts", "contract_templates"
