@@ -3,7 +3,7 @@ class DashboardController < ApplicationController
     @contracts = current_user.contracts.includes(:contract_template).order(created_at: :desc)
     @pending_invitations = current_user.pending_invitations.includes(:company)
     
-    if current_user.business?
+    if current_user.can_use_business_features?
       @company = current_user.current_company
       @custom_templates = @company&.custom_templates&.includes(:contract_template) || []
       @company_users = @company&.company_users&.includes(:user) || []

@@ -1,3 +1,21 @@
+<% content_for :head do %>
+  <script>
+    function openInviteModal() {
+      document.getElementById('invite-modal').classList.remove('hidden');
+    }
+    function closeInviteModal() {
+      document.getElementById('invite-modal').classList.add('hidden');
+    }
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+      const modal = document.getElementById('invite-modal');
+      if (event.target === modal) {
+        closeInviteModal();
+      }
+    });
+  </script>
+<% end %>
+
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <!-- Header -->
   <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
@@ -35,11 +53,48 @@
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-medium text-gray-900">Miembros del Equipo</h2>
-        <button class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
+        <button onclick="openInviteModal()" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full text-indigo-700 bg-indigo-100 hover:bg-indigo-200 cursor-pointer">
+          <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
           Invitar Miembro
         </button>
       </div>
-      
+
+      <!-- Pending Invitations -->
+      <% @pending_invitations = @company.company_invitations.pending %>
+      <% if @pending_invitations.any? %>
+        <div class="mb-4">
+          <h3 class="text-sm font-medium text-gray-500 mb-2">Invitaciones Pendientes</h3>
+          <div class="space-y-2">
+            <% @pending_invitations.each do |invitation| %>
+              <div class="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-100 rounded-lg">
+                <div class="flex items-center space-x-3">
+                  <div class="h-8 w-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <span class="text-xs font-medium text-yellow-700">
+                      <%= invitation.email.first.upcase %>
+                    </span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-yellow-900"><%= invitation.email %></p>
+                    <p class="text-xs text-yellow-700">
+                      <%= invitation.role == "admin" ? "Admin" : "Miembro" %> - Pendiente
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                    Pendiente
+                  </span>
+                  <%= button_to "Cancelar", company_company_invitation_path(@company, invitation), method: :delete, class: "text-red-600 hover:text-red-800 text-sm cursor-pointer", data: { confirm: "¿Cancelar invitación para #{invitation.email}?" } %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Members -->
       <div class="space-y-3">
         <% @company_users.each do |company_user| %>
           <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -69,7 +124,7 @@
                 </span>
               <% end %>
               <% unless company_user.owner? %>
-                <button class="text-red-600 hover:text-red-800 text-sm">Eliminar</button>
+                <%= button_to "Eliminar", remove_user_company_path(@company, user_id: company_user.user_id), method: :delete, class: "text-red-600 hover:text-red-800 text-sm cursor-pointer", data: { confirm: "¿Eliminar a #{company_user.user.email} del equipo?" }, form_class: "inline" %>
               <% end %>
             </div>
           </div>
@@ -85,7 +140,7 @@
         <h2 class="text-lg font-medium text-gray-900">Plantillas Personalizadas</h2>
         <%= link_to "Nueva Plantilla", new_custom_template_path, class: "inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full text-indigo-700 bg-indigo-100 hover:bg-indigo-200" %>
       </div>
-      
+
       <% if @custom_templates.any? %>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <% @custom_templates.each do |template| %>
@@ -124,7 +179,7 @@
         <h2 class="text-lg font-medium text-gray-900">Tickets de Soporte</h2>
         <%= link_to "Nuevo Ticket", new_support_ticket_path, class: "inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full text-indigo-700 bg-indigo-100 hover:bg-indigo-200" %>
       </div>
-      
+
       <div class="space-y-3">
         <% current_user.support_tickets.limit(5).each do |ticket| %>
           <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -142,7 +197,7 @@
               <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium <%= priority_class %>">
                 <%= ticket.priority.upcase %>
               </span>
-              
+
               <% status_class = case ticket.status
                              when 'open' then 'bg-green-100 text-green-800'
                              when 'in_progress' then 'bg-yellow-100 text-yellow-800'
@@ -156,12 +211,44 @@
           </div>
         <% end %>
       </div>
-      
+
       <% if current_user.support_tickets.count > 5 %>
         <div class="mt-4 text-center">
           <%= link_to "Ver Todos los Tickets", support_tickets_path, class: "text-indigo-600 hover:text-indigo-800 text-sm" %>
         </div>
       <% end %>
     </div>
+  </div>
+</div>
+
+<!-- Invite Member Modal -->
+<div id="invite-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 hidden transition-opacity" onclick="if(event.target === this) closeInviteModal()">
+  <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4" onclick="event.stopPropagation()">
+    <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+      <h3 class="text-lg font-semibold text-gray-900">Invitar Miembro al Equipo</h3>
+      <button onclick="closeInviteModal()" class="text-gray-400 hover:text-gray-600 cursor-pointer">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <%= form_with model: [@company, CompanyInvitation.new], local: true, class: "p-6" do |f| %>
+      <div class="space-y-4">
+        <div>
+          <%= f.label :email, "Correo Electrónico", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.email_field :email, placeholder: "correo@ejemplo.com", required: true, class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm" %>
+        </div>
+        <div>
+          <%= f.label :role, "Rol", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.select :role, [["Miembro (puede crear contratos)", "member"], ["Admin (puede gestionar equipo)", "admin"]], {}, class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm" %>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end space-x-3">
+        <button type="button" onclick="closeInviteModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer">
+          Cancelar
+        </button>
+        <%= f.submit "Enviar Invitación", class: "px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 cursor-pointer" %>
+      </div>
+    <% end %>
   </div>
 </div>

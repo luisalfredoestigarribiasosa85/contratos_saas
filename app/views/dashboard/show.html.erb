@@ -39,7 +39,7 @@
     </div>
     <%= link_to "Mejorar plan", account_plan_path, class: "text-sm font-semibold text-indigo-700 hover:text-indigo-900 whitespace-nowrap" %>
   </div>
-<% elsif current_user.business? %>
+<% elsif current_user.can_use_business_features? %>
   <div class="mb-6 bg-green-50 rounded-lg border border-green-200 p-4">
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
       <div>
@@ -62,7 +62,7 @@
 <% end %>
 
 <!-- Business Features Section -->
-<% if current_user.business? && @company %>
+<% if current_user.can_use_business_features? && @company %>
   <div class="mb-8">
     <h2 class="text-lg font-semibold text-gray-800 mb-4">Características Business</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+</head>
+<body style="font-family: Arial, Helvetica, sans-serif; background-color: #f9fafb; margin: 0; padding: 0;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; min-height: 100vh;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden;">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #6366f1, #4f46e5); padding: 40px 30px; text-align: center;">
+              <h1 style="color: #ffffff; font-size: 24px; margin: 0; font-weight: 700;">¡Has sido invitado!</h1>
+              <p style="color: #c7d2fe; font-size: 16px; margin: 8px 0 0 0;">
+                Únete al equipo de <strong style="color: #ffffff;"><%= @company.name %></strong>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding: 40px 30px;">
+              <p style="font-size: 16px; color: #374151; line-height: 1.6; margin: 0 0 20px 0;">
+                Hola,
+              </p>
+              <p style="font-size: 16px; color: #374151; line-height: 1.6; margin: 0 0 20px 0;">
+                <strong><%= @inviter.email %></strong> te ha invitado a unirte a la empresa
+                <strong><%= @company.name %></strong> en <strong>ContratoFácil</strong> como
+                <strong><%= @role_label %></strong>.
+              </p>
+              <p style="font-size: 16px; color: #374151; line-height: 1.6; margin: 0 0 30px 0;">
+                Como miembro del equipo podrás colaborar en la creación y gestión de contratos legales.
+              </p>
+
+              <!-- CTA Buttons -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding: 0 0 12px 0;">
+                    <a href="<%= accept_via_token_company_invitation_url(token: @invitation.token) %>"
+                       style="display: inline-block; background-color: #6366f1; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 40px; border-radius: 8px;">
+                      Aceptar Invitación
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <a href="<%= decline_via_token_company_invitation_url(token: @invitation.token) %>"
+                       style="display: inline-block; color: #6b7280; font-size: 14px; text-decoration: underline; padding: 8px 20px;">
+                      Rechazar invitación
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f3f4f6; padding: 24px 30px; text-align: center;">
+              <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                Este es un mensaje automático de <strong>ContratoFácil</strong>. Si no esperabas esta invitación, puedes ignorar este correo.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

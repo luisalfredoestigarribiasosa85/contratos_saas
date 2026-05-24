@@ -39,11 +39,18 @@ Rails.application.routes.draw do
   # Business features
   resources :companies, only: [ :show, :edit, :update ] do
     resources :company_invitations, only: [ :create, :destroy ], path: "invitations", module: :companies
+    member do
+      delete "remove_user", to: "companies#remove_user"
+    end
   end
   resources :company_invitations, only: [] do
     member do
       post :accept
       post :decline
+    end
+    collection do
+      get "accept/:token", to: "company_invitations#accept_via_token", as: :accept_via_token
+      get "decline/:token", to: "company_invitations#decline_via_token", as: :decline_via_token
     end
   end
   resources :custom_templates, only: [ :index, :new, :create, :edit, :update, :destroy ]

@@ -9,8 +9,7 @@ class Companies::CompanyInvitationsController < ApplicationController
     @invitation.status = 'pending'
 
     if @invitation.save
-      # In a real SaaS, we would deliver an email here using a Mailer.
-      # E.g. CompanyInvitationMailer.invite(@invitation).deliver_later
+      CompanyInvitationMailer.with(invitation: @invitation).invite.deliver_later
       redirect_to company_path(@company), notice: "Invitación enviada a #{@invitation.email}."
     else
       redirect_to company_path(@company), alert: @invitation.errors.full_messages.to_sentence
@@ -38,7 +37,7 @@ class Companies::CompanyInvitationsController < ApplicationController
   end
 
   def require_business_features!
-    unless current_user.business?
+    unless current_user.can_use_business_features?
       redirect_to account_plan_path, alert: 'Esta función requiere un plan Business.'
     end
   end

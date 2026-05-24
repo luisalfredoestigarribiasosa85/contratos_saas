@@ -20,6 +20,24 @@ class CompaniesController < ApplicationController
     end
   end
 
+  def remove_user
+    user = @company.users.find(params[:user_id])
+    company_user = @company.company_users.find_by!(user: user)
+
+    if company_user.owner?
+      redirect_to company_path(@company), alert: 'No puedes eliminar al dueño de la empresa.'
+      return
+    end
+
+    unless current_user_company_user&.can_manage_users?
+      redirect_to company_path(@company), alert: 'No tienes permiso para eliminar miembros.'
+      return
+    end
+
+    @company.remove_user(user)
+    redirect_to company_path(@company), notice: "Usuario #{user.email} eliminado del equipo."
+  end
+
   private
 
   def set_company
@@ -34,12 +52,16 @@ class CompaniesController < ApplicationController
   end
 
   def require_business_features!
-    unless current_user.business?
+    unless current_user.can_use_business_features?
       redirect_to account_plan_path, alert: 'Esta función requiere un plan Business.'
     end
   end
 
   def company_params
     params.require(:company).permit(:name, :logo)
+  end
+
+  def current_user_company_user
+    @company.company_users.find_by(user: current_user)
   end
 end

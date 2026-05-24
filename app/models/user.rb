@@ -20,6 +20,7 @@ class User < ApplicationRecord
   end
 
   def free?
+    return false if can_use_business_features? # Members of a Business team inherit benefits
     subscription.nil? || subscription.free?
   end
 
@@ -69,7 +70,10 @@ class User < ApplicationRecord
   end
 
   def can_use_business_features?
-    business? && (company_owner? || company_admin?)
+    return true if business? && (company_owner? || company_admin?)
+    # Members of a Business company also get access to Business features
+    return true if company_member? && companies.any? { |c| c.owner&.business? }
+    false
   end
 
   def admin?

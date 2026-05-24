@@ -1,0 +1,14 @@
+¡Has sido invitado a <%= @company.name %>!
+
+<%= @inviter.email %> te ha invitado a unirte a la empresa <%= @company.name %> en ContratoFácil como <%= @role_label %>.
+
+Como miembro del equipo podrás colaborar en la creación y gestión de contratos legales.
+
+Para aceptar la invitación, visita:
+<%= accept_via_token_company_invitation_url(token: @invitation.token) %>
+
+Para rechazar la invitación, visita:
+<%= decline_via_token_company_invitation_url(token: @invitation.token) %>
+
+---
+Este es un mensaje automático de ContratoFácil. Si no esperabas esta invitación, puedes ignorar este correo.
