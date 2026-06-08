@@ -1,0 +1,22 @@
+databases:
+  - name: primary
+    type: postgresql
+    version: "17"
+    plan: free
+
+services:
+  - type: web
+    name: contratos-saas
+    runtime: ruby
+    buildCommand: "./bin/render-build.sh"
+    startCommand: bundle exec rails server
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: RAILS_LOG_TO_STDOUT
+        value: "true"
+      - key: RAILS_SERVE_STATIC_FILES
+        value: "true"
+      - key: RAILS_MASTER_KEY
+        fromSecret: RAILS_MASTER_KEY
+    plan: free
