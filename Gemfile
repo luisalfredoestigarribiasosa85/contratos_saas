@@ -41,7 +41,7 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 # Authentication [https://github.com/heartcombo/devise]
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 
 # PDF generation [https://github.com/prawnpdf/prawn]
 gem "prawn", "~> 2.5"
