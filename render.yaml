@@ -9,14 +9,24 @@ services:
     name: contratos-saas
     runtime: ruby
     buildCommand: "./bin/render-build.sh"
-    startCommand: bundle exec rails server
+    startCommand: bundle exec puma -C config/puma.rb
+
     envVars:
       - key: RAILS_ENV
         value: production
+
       - key: RAILS_LOG_TO_STDOUT
         value: "true"
+
       - key: RAILS_SERVE_STATIC_FILES
         value: "true"
+
       - key: RAILS_MASTER_KEY
         fromSecret: RAILS_MASTER_KEY
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: primary
+          property: connectionString
+
     plan: free
